@@ -150,17 +150,22 @@
           **********************************************************/
 
           /********************** NEW VERSION **********************/
-          popupRestore.create(saver.getSaves());
-          popupRestore.getNode().on({
-            deleteSave: function(e, savename) {
-              return saver.deleteSave(savename);
-            },
-            restoreSet: function(e, restore) {
-              clearAll();
-              return saver.restoreData(restore, createNotion, createClass, createInstance);
-            }
-          });
-          return popupRestore.show();
+          //return saver.restoreData(saver.getSaves(), createNotion, createClass, createInstance);
+          var k, key, len, ref, saves;
+          var fileToOpen = new air.File();
+          var txtFilter = new air.FileFilter("Text", "*.as;*.css;*.html;*.txt;*.xml");
+
+          try {
+            fileToOpen.browseForOpen("Open", [txtFilter]);
+            fileToOpen.addEventListener(air.Event.SELECT, function(event) {
+              var stream = new air.FileStream();
+              stream.open(event.target, air.FileMode.READ);
+              var fileData = stream.readUTFBytes(stream.bytesAvailable);
+              return saver.restoreData(JSON.parse(fileData.toString()), createNotion, createClass, createInstance);
+            });
+          } catch (error) {
+            air.trace("Failed:", error.message)
+          }
           /**********************************************************/
         }
       });

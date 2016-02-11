@@ -200,6 +200,8 @@
       **********************************************************/
 
       /********************** NEW VERSION **********************/
+      /* ne retourne pas une liste de sauvegardes
+      dans un menu mais la sauvegarde directement */
       var fileToOpen = new air.File();
       var txtFilter = new air.FileFilter("Text", "*.as;*.css;*.html;*.txt;*.xml");
 
@@ -209,33 +211,7 @@
           var stream = new air.FileStream();
           stream.open(event.target, air.FileMode.READ);
           var fileData = stream.readUTFBytes(stream.bytesAvailable);
-
-/*        alert(fileData);
-          var obj = JSON.parse(fileData.toString());
-          obj = Object.keys(obj);
-          alert(obj);*/
-          /****** debug ******
-          alert(fileData);
-          air.trace(fileData);
-          ********************/
-          var fileParsed = JSON.parse(fileData.toString());
-          ref = Object.keys(fileParsed);
-          //air.trace(ref);
-          air.trace("fileParsed :");
-          var_dump(fileParsed);
-          air.trace("ref :");
-          var_dump(ref);
-          for (k = 0, len = ref.length; k < len; k++) {
-            key = ref[k];
-            //air.trace(key);
-            air.trace("fileParsed[structure] :");
-            var_dump(fileParsed["structure"])
-            air.trace("fileParsed[key] :");
-            var_dump(fileParsed[key])
-            saves[key] = JSON.parse(fileParsed[key]);//todo: nouvelle méthode de sauvegarde/chargement
-          }
-          air.trace("peed on my pants");
-          return null;
+          return JSON.parse(fileData.toString());
         });
       } catch (error) {
         air.trace("Failed:", error.message)
