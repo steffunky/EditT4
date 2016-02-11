@@ -1,0 +1,99 @@
+input.form-control:not(.default) {
+    width: 90% !important;
+    margin: 3%;
+    height: 30px !important;
+}
+
+textarea.form-control:not(.default) {
+    width: 90% !important;
+    margin: 3%;
+}
+
+.popup_block_title {
+    font-weight: bold;
+}
+
+.tags_popup .input-group span {
+    position: relative;
+    top: -0.5px;
+}
+
+.table_notion_display {
+    display: inline-block;
+    margin: 20px;
+}
+
+.table_notion_display label input {
+    position: relative;
+    top: 3px;
+    margin: 2px;
+}
+
+.table_notion_display th, .table_tags_color th, .table_notion_display td, .table_tags_color td {
+    text-align: left;
+    width: 150px;
+    height: 20px;
+}
+
+.table_tags_color select {
+    width: 100px;
+}
+
+.table_notion_display label {
+    font-weight: normal !important;
+    cursor: pointer;
+}
+
+.table_tags_color td {
+    text-align: left;   
+}
+
+.color-box {
+	height: 20px;
+	margin: 5px;
+	border: 1px solid black;
+}
+
+#cell_display table {
+    vertical-align: top;
+}
+
+#popup_saver table th {
+    text-align: center;
+    width: 100px;
+}
+
+#popup_saver table td {
+    text-align: center;
+}
+
+#popup_saver label {
+    font-weight: normal !important;
+    cursor: pointer;
+}
+
+#saver_structure label input, #saver_tags label input{
+    margin: 10px;
+}
+
+.block_restore {
+    margin: 10px;
+}
+
+.restore_button {
+    cursor: pointer;
+    margin-left: 10px;
+}
+
+.restore_description {
+    margin-left: 3px;
+    font-style: italic;
+}
+
+.load .notion {
+    margin-left: 5px;
+}
+
+#popup_filter input, #popup_filter select {
+    margin: 10px;   
+}

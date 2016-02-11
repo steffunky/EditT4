@@ -1,0 +1,68 @@
+body {
+    padding: 10px;
+}
+
+nav {
+    margin: 20px;
+    margin-top: 10px
+}
+
+#notions {
+    padding-right: 20px;
+}
+
+.draggable {
+    cursor: move;
+}
+
+.selected {
+    background: #DEDEDE;
+}
+
+.resizable-outer_div {
+    position:relative;
+    height:100%;
+    width:100%
+}
+
+.resizable-resizer_div {
+    position: absolute;
+    height: 100%;
+    width: 5px;
+    margin-right: -5px;
+    left: 100%;
+    top: 0px;
+    cursor: w-resize;
+    z-index: 10;
+}
+
+td {
+    /* Make if unselectable */
+    -moz-user-select: -moz-none;
+   -khtml-user-select: none;
+   -webkit-user-select: none;
+
+   /*
+     Introduced in IE 10.
+     See http://ie.microsoft.com/testdrive/HTML5/msUserSelect/
+   */
+   -ms-user-select: none;
+   user-select: none;
+}
+
+.icon {
+    margin: 5px;
+}
+
+.span_action {
+    cursor: pointer;
+}
+
+.notion:not(#add_notion) .list-group {
+    height: 100px;
+    overflow-y: auto;
+}
+
+.add_notion.glyphicon {
+    margin: 5px;
+}

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <title>EditT3</title>
+    <link rel="stylesheet" type="text/css" href="css/index.css" />
+    <link rel="stylesheet" type="text/css" href="css/table.css" />
+    <link rel="stylesheet" type="text/css" href="css/item.css" />
+    <link rel="stylesheet" type="text/css" href="css/popup.css" />
+    <link rel="stylesheet" type="text/css" href="lib/jQuery-contextMenu/jquery.contextMenu.css" />
+    <link rel="stylesheet" type="text/css" href="lib/bootstrap-3.3.2/css/bootstrap.min.css" />
+    <!--<link rel="stylesheet" type="text/css" href="lib/bootstrap-3.3.2/css/bootstrap-theme.min.css" />-->
+
+    <meta charset="utf-8" />
+  </head>
+  
+  <body>
+  
+  <!-- Menu -->
+  <nav class="col-md-12">
+    <button id='create_button' type="button" class="btn btn-default">
+      <span class="glyphicon glyphicon-file" aria-hidden="true"></span> New
+    </button>
+    <button id='save_button' type="button" class="btn btn-default" aria-label="Left Align">
+      <span class="glyphicon glyphicon-floppy-save" aria-hidden="true"></span> Save As
+    </button>
+    <button id='display_button' type="button" class="btn btn-default" aria-label="Left Align">
+      <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span> Display
+    </button>
+    <button id='tags_button' type="button" class="btn btn-default" aria-label="Left Align">
+      <span class="glyphicon glyphicon-tag" aria-hidden="true"></span> Tags
+    </button>
+    <button id='filter_button' type="button" class="btn btn-default" aria-label="Left Align">
+      <span class="glyphicon glyphicon glyphicon-cog" aria-hidden="true"></span> Filter
+    </button>
+  </nav>
+    
+  <div id="notions" class="col-md-4"></div>
+  <div id="mytable" class="col-md-8"></div>
+
+  <!-- Lib -->
+  <script src="lib/jQuery/jquery-1.11.1.js"></script>
+  <script src="lib/jQuery-contextMenu/jquery.contextMenu.js"></script>
+  <script src="lib/jQuery-colResize/colResize.js"></script>
+  <script src="lib/jQuery-jqDnR/jqDnR.js"></script>
+  <script src="lib/jQuery-popup-overlay/jquery.popupoverlay.js"></script>
+  <script src="lib/bootstrap-3.3.2/js/bootstrap.min.js"></script>
+  
+  <!-- Js -->
+  <script src="js/utils.js"></script>
+  <script src="js/tagsManager.js"></script>
+  <script src="js/table.js"></script>
+  <script src="js/draganddrop.js"></script>
+  <script src="js/contextmenu.js"></script>
+  <script src="js/notionFactory.js"></script>
+  <script src="js/notion.js"></script>
+  <script src="js/class.js"></script>
+  <script src="js/instance.js"></script>
+  <script src="js/popup.js"></script>
+  <script src="js/popupNew.js"></script>
+  <script src="js/popupNotions.js"></script>
+  <script src="js/popupClass.js"></script>
+  <script src="js/popupInstance.js"></script>
+  <script src="js/popupTags.js"></script>
+  <script src="js/popupDisplay.js"></script>
+  <script src="js/popupLoadNotion.js"></script>
+  <script src="js/popupLoadClass.js"></script>
+  <script src="js/popupSaver.js"></script>
+  <script src="js/popupFilter.js"></script>
+  <script src="js/saver.js"></script>
+  <script src="js/popupRestore.js"></script>
+  <script src="js/index.js"></script>
+  <!--ajouté par moi-->
+  <script src="js/AIRAliases.js"></script>
+  
+  </body>
+</html>
