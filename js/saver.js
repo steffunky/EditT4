@@ -110,12 +110,16 @@
         save.tags = this.tagsManager.getTags();
         save.tagsConf = this.tagsManager.getTagsConf();
       }
-      /********************** OLD VERSION **********************
-      return localStorage[save.name] = JSON.stringify(save);
-      **********************************************************/
 
-      /********************** NEW VERSION **********************/
-      var docsDir = air.File.desktopDirectory;
+      /*************************************[ SAUVEGARDE ]*************************************
+
+      -----------------------[ OLD VERSION ]----------------------
+      return localStorage[save.name] = JSON.stringify(save);
+
+      -----------------------[ NEW VERSION ]----------------------*/
+      var directory = air.File.documentsDirectory.resolvePath("Editor"); 
+      directory.createDirectory();
+      var docsDir = air.File.documentsDirectory.resolvePath('Editor/default.json');
       try {
         docsDir.browseForSave("Save As");
         docsDir.addEventListener(air.Event.SELECT, function(event) {
@@ -125,13 +129,16 @@
             stream.open(newFile, air.FileMode.WRITE);
             stream.writeUTFBytes(JSON.stringify(save));
             stream.close();
+          } else {
+            //todo : autoriser écrasement sauvegarde (prompt "etes-vous sur [...] ? Oui ; Non")
+            alert("this file name is already taken");
           }
         });
       } catch (error) {
         air.trace("Failed:", error.message)
       }
+      /****************************************************************************************/
     };
-    /**********************************************************/
 
     Saver.prototype.restoreData = function(restore, createNotion, createClass, createInstance) {
       var $element, attribute, create_instance, create_instances, display_attribute, i, instance, k, l, len, len1, len2, len3, len4, m, my_class, n, notion, o, p, ref, ref1, ref2, restore_class_instance, restore_class_instances, restore_instance, restore_notion, restore_notions, restore_table, results, to_split;
@@ -187,37 +194,17 @@
       }
     };
 
+    /**************[ Not used anymore]**************/
     Saver.prototype.getSaves = function() {
       var k, key, len, ref, saves;
       saves = {};
-      /********************** OLD VERSION **********************
-      ref = Object.keys(localStorage);//todo: nouvelle méthode de sauvegarde/chargement
+      ref = Object.keys(localStorage);
       for (k = 0, len = ref.length; k < len; k++) {
         key = ref[k];
-        saves[key] = JSON.parse(localStorage[key]);//todo: nouvelle méthode de sauvegarde/chargement
+        saves[key] = JSON.parse(localStorage[key]);
       }
       return saves;
-      **********************************************************/
-
-      /********************** NEW VERSION **********************/
-      /* ne retourne pas une liste de sauvegardes
-      dans un menu mais la sauvegarde directement */
-      var fileToOpen = new air.File();
-      var txtFilter = new air.FileFilter("Text", "*.as;*.css;*.html;*.txt;*.xml");
-
-      try {
-        fileToOpen.browseForOpen("Open", [txtFilter]);
-        fileToOpen.addEventListener(air.Event.SELECT, function(event) {
-          var stream = new air.FileStream();
-          stream.open(event.target, air.FileMode.READ);
-          var fileData = stream.readUTFBytes(stream.bytesAvailable);
-          return JSON.parse(fileData.toString());
-        });
-      } catch (error) {
-        air.trace("Failed:", error.message)
-      }
-      /**********************************************************/
-    };
+    };/*********************************************/
 
     Saver.prototype.hasSaves = function() {
       //return Object.keys(localStorage).length !== 0;//todo: nouvelle méthode de sauvegarde/chargement

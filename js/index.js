@@ -21,6 +21,9 @@
     popupRestore = new PopupRestore();
     popupLoadNotion = new PopupLoadNotion();
     popupLoadClass = new PopupLoadClass();
+    /************************[ ADDED : IMPORT ]*************************/
+    var popupImport = new PopupImport();
+    /*******************************************************************/
     clearAll = function() {
       table.clear();
       notionFactory.clear();
@@ -135,7 +138,10 @@
             alert('There is no saves');
             return;
           }
-          /********************** OLD VERSION **********************
+
+          /*************************************[ CHARGEMENT ]*************************************
+
+          -----------------------[ OLD VERSION ]----------------------
           popupRestore.create(saver.getSaves());
           popupRestore.getNode().on({
             deleteSave: function(e, savename) {
@@ -147,13 +153,11 @@
             }
           });
           return popupRestore.show();
-          **********************************************************/
 
-          /********************** NEW VERSION **********************/
-          //return saver.restoreData(saver.getSaves(), createNotion, createClass, createInstance);
+          -----------------------[ NEW VERSION ]----------------------*/
           var k, key, len, ref, saves;
-          var fileToOpen = new air.File();
-          var txtFilter = new air.FileFilter("Text", "*.as;*.css;*.html;*.txt;*.xml");
+          var fileToOpen = air.File.documentsDirectory.resolvePath("Editor");
+          var txtFilter = new air.FileFilter("Text", "*.as;*.css;*.html;*.txt;*.xml; *.json");
 
           try {
             fileToOpen.browseForOpen("Open", [txtFilter]);
@@ -161,12 +165,13 @@
               var stream = new air.FileStream();
               stream.open(event.target, air.FileMode.READ);
               var fileData = stream.readUTFBytes(stream.bytesAvailable);
+              clearAll();
               return saver.restoreData(JSON.parse(fileData.toString()), createNotion, createClass, createInstance);
             });
           } catch (error) {
             air.trace("Failed:", error.message)
           }
-          /**********************************************************/
+          /****************************************************************************************/
         }
       });
     };
@@ -227,6 +232,14 @@
         return popupSaver.show();
       }
     });
+    /************************[ ADDED : IMPORT ]*************************/
+    $('#import_button').on({
+      click: function() {
+        popupImport.create();
+        return popupImport.show();
+      }
+    });
+    /*******************************************************************/
     $('#tags_button').on({
       click: function() {
         popupTags.create(tagsManager.getTags());
