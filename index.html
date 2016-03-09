@@ -18,24 +18,33 @@
   
   <!-- Menu -->
   <nav class="col-md-12">
-    <button id='create_button' type="button" class="btn btn-default">
-      <span class="glyphicon glyphicon-file" aria-hidden="true"></span> New
-    </button>
-    <button id='save_button' type="button" class="btn btn-default" aria-label="Left Align">
-      <span class="glyphicon glyphicon-floppy-save" aria-hidden="true"></span> Save As
-    </button>
-    <button id='import_button' type="button" class="btn btn-default" aria-label="Left Align">
-      <span class="glyphicon glyphicon-import" aria-hidden="true"></span> Import
-    </button>
-    <button id='display_button' type="button" class="btn btn-default" aria-label="Left Align">
-      <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span> Display
-    </button>
-    <button id='tags_button' type="button" class="btn btn-default" aria-label="Left Align">
-      <span class="glyphicon glyphicon-tag" aria-hidden="true"></span> Tags
-    </button>
-    <button id='filter_button' type="button" class="btn btn-default" aria-label="Left Align">
-      <span class="glyphicon glyphicon glyphicon-cog" aria-hidden="true"></span> Filter
-    </button>
+    <div class="btn-group">
+      <div class="btn-group">
+        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+          <span class="glyphicon glyphicon-file" aria-hidden="true"></span> File <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu" role="menu">
+          <li><a href="#" id='open_button'>Open</a></li>
+          <li role="separator" class="divider"></li>
+          <li><a href="#" id='create_button'>New</a></li>
+        </ul>
+      </div>
+      <button id='save_button' type="button" class="btn btn-default" aria-label="Left Align">
+        <span class="glyphicon glyphicon-floppy-save" aria-hidden="true"></span> Save As
+      </button>
+      <button id='import_button' type="button" class="btn btn-default" aria-label="Left Align">
+        <span class="glyphicon glyphicon-import" aria-hidden="true"></span> Import
+      </button>
+      <button id='display_button' type="button" class="btn btn-default" aria-label="Left Align">
+        <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span> Display
+      </button>
+      <button id='tags_button' type="button" class="btn btn-default" aria-label="Left Align">
+        <span class="glyphicon glyphicon-tag" aria-hidden="true"></span> Tags
+      </button>
+      <button id='filter_button' type="button" class="btn btn-default" aria-label="Left Align">
+        <span class="glyphicon glyphicon glyphicon-cog" aria-hidden="true"></span> Filter
+      </button>
+    </div>
   </nav>
     
   <div id="notions" class="col-md-4"></div>
@@ -60,7 +69,7 @@
   <script src="js/class.js"></script>
   <script src="js/instance.js"></script>
   <script src="js/popup.js"></script>
-  <script src="js/popupNew.js"></script>
+  <!-- DELETED : <script src="js/popupNew.js"></script> -->
   <script src="js/popupNotions.js"></script>
   <script src="js/popupClass.js"></script>
   <script src="js/popupInstance.js"></script>
