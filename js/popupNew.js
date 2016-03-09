@@ -20,7 +20,12 @@
           };
         })(this)
       });
+      /**********************[ USELESS TITLE ]**********************
+      ---------------------[ OLD VERSION ]---------------------
       $open_block = this.createBlock("Open");
+      ---------------------[ NEW VERSION ]--------------------*/
+      $open_block = this.createBlock();
+      /*************************************************************/
       $open_block.append($open_button);
       $create_notions_button = this.createButton('Create from scratch');
       $create_notions_button.on({
@@ -30,7 +35,12 @@
           };
         })(this)
       });
+      /**********************[ USELESS TITLE ]**********************
+      ---------------------[ OLD VERSION ]---------------------
       $create_notions_block = this.createBlock('Create from scratch');
+      ---------------------[ NEW VERSION ]--------------------*/
+      $create_notions_block = this.createBlock();
+      /*************************************************************/
       $create_notions_block.append($create_notions_button);
       $close_button = this.createCloseButton();
       this.$popupnew = this.createPopup([this.createTitle('New')], [$open_block, $create_notions_block], [$close_button]);

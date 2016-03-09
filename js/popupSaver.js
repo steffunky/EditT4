@@ -100,7 +100,12 @@
       }
       $group.append($table);
       $body.append($group);
+      /*******************[ SAUVEGARDE ]*******************
+      --------------[ OLD VERSION ]--------------
       $create_button = this.createButton('Save', true);
+      --------------[ NEW VERSION ]-------------*/
+      $create_button = this.createButton('Confirm', true);
+      /****************************************************/
       $create_button.on({
         click: (function(_this) {
           return function() {

@@ -119,20 +119,15 @@
       -----------------------[ NEW VERSION ]----------------------*/
       var directory = air.File.documentsDirectory.resolvePath("Editor"); 
       directory.createDirectory();
-      var docsDir = air.File.documentsDirectory.resolvePath('Editor/default.json');
+      var docsDir = air.File.documentsDirectory.resolvePath('Editor/'+save.name+'.json');
       try {
         docsDir.browseForSave("Save As");
         docsDir.addEventListener(air.Event.SELECT, function(event) {
           var newFile = event.target ;
-          if (!newFile.exists) {
-            var stream = new air.FileStream();
-            stream.open(newFile, air.FileMode.WRITE);
-            stream.writeUTFBytes(JSON.stringify(save));
-            stream.close();
-          } else {
-            //todo : autoriser écrasement sauvegarde (prompt "etes-vous sur [...] ? Oui ; Non")
-            alert("this file name is already taken");
-          }
+          var stream = new air.FileStream();
+          stream.open(newFile, air.FileMode.WRITE);
+          stream.writeUTFBytes(JSON.stringify(save));
+          stream.close();
         });
       } catch (error) {
         air.trace("Failed:", error.message)
