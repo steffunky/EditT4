@@ -166,14 +166,14 @@
         return $(event.currentTarget).colResize();
       }
     });
-    $('#create_button').on({
+    $('#new_button').on({
       click: function() {
         return clearAll();
       }
     });
-    $('#open_button').on({
+    /*$('#open_button').on({
       click: function() {
-        /*************************************[ CHARGEMENT FICHIER ]*************************************/
+        /*************************************[ CHARGEMENT FICHIER ]*************************************
         var k, key, len, ref, saves;
         var fileToOpen = air.File.documentsDirectory.resolvePath("Editor");
         var txtFilter = new air.FileFilter("Text", "*.as;*.css;*.html;*.txt;*.xml; *.json");
@@ -190,7 +190,43 @@
         } catch (error) {
           air.trace("Failed:", error.message);
         }
-        /************************************************************************************************/
+        /************************************************************************************************
+      }
+      change: function() {
+        alert("heeeeeey !");
+      }
+
+    });*/
+/*    document.getElementById("open_button").onclick = function () {
+      alert('hello!'); 
+    };*/
+    $('#fake_open_button').on({
+      click: function() {
+        $('#open_button').click();
+      }
+    });
+    $('#open_button').on({
+      click: function() {
+        //ensure that the browser starts in the right directory
+        var fs = require('fs');
+        var os = require('os');
+        var path = require('path');
+        var dir = os.homedir()+path.sep+"Editor";
+        if (!fs.existsSync(dir)){
+            fs.mkdirSync(dir);
+        }
+        console.log(dir);
+        this.nwworkingdir = dir;
+      },
+      change: function() {
+        //console.log(this.value);
+        var fs = require('fs');
+        fs.readFile(this.value, 'utf8', function (err,data) {
+          if (err) {
+            return console.log(err);
+          }
+          return saver.restoreData(JSON.parse(data), createNotion, createClass, createInstance);
+        });
       }
     });
     $('#save_button').on({

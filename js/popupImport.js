@@ -20,7 +20,7 @@
           };
         })(this)
       });
-      $open_block = this.createBlock("Open");
+      $open_block = this.createBlock();
       $open_block.append($open_button);
       $create_notions_button = this.createButton('Create from scratch');
       $create_notions_button.on({

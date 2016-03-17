@@ -24,9 +24,9 @@
           <span class="glyphicon glyphicon-file" aria-hidden="true"></span> File <span class="caret"></span>
         </button>
         <ul class="dropdown-menu" role="menu">
-          <li><a href="#" id='open_button'>Open</a></li>
+          <li><a id='fake_open_button' href="#" >Open</a></li>
           <li role="separator" class="divider"></li>
-          <li><a href="#" id='create_button'>New</a></li>
+          <li><a id='new_button' href="#" >New</a></li>
         </ul>
       </div>
       <button id='save_button' type="button" class="btn btn-default" aria-label="Left Align">
@@ -46,6 +46,16 @@
       </button>
     </div>
   </nav>
+
+  <!-- Open File (Hidden : triggered by fake_open_button in the topbar) -->
+  <div class="fileinput fileinput-new" data-provides="fileinput" hidden>
+    <span class="btn btn-default btn-file">
+      <span>Choose file</span>
+      <input id='open_button' type="file" class="filestyle" data-input="false"/>
+    </span>
+    <span class="fileinput-filename"></span>
+  </div>
+
     
   <div id="notions" class="col-md-4"></div>
   <div id="mytable" class="col-md-8"></div>
@@ -83,8 +93,6 @@
   <script src="js/popupRestore.js"></script>
   <script src="js/index.js"></script>
   <!--************[ Added ]************-->
-  <!--Adobe Air API-->
-  <script src="js/AIRAliases.js"></script>
   <!--fonctionnalité Import-->
   <script src="js/popupImport.js"></script>
   
