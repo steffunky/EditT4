@@ -7,7 +7,7 @@
       this.tagsManager = tagsManager;
     }
 
-    Saver.prototype.save = function(to_save) {
+    Saver.prototype.save = function(filename, to_save) {
       var $node, $td, $tds, $tr, $trs, act_rowspan, candidate_notion, class_to_save, diff, i, instance, instance_to_save, j, k, l, len, len1, len2, m, my_class, n, next_rowspan, notion, notion_to_save, notions, o, ref, ref1, ref2, ref3, save, table;
       save = {
         name: to_save['name'],
@@ -106,8 +106,8 @@
       -----------------------[ OLD VERSION ]----------------------
       return localStorage[save.name] = JSON.stringify(save);
 
-      -----------------------[ NEW VERSION ]----------------------*/
-      var directory = air.File.documentsDirectory.resolvePath("Editor"); 
+      -----------------------[ NEW VERSION AIR API]----------------------*/
+/*    var directory = air.File.documentsDirectory.resolvePath("Editor"); 
       directory.createDirectory();
       var docsDir = air.File.documentsDirectory.resolvePath('Editor/'+save.name+'.json');
       try {
@@ -122,15 +122,14 @@
       } catch (error) {
         air.trace("Failed:", error.message)
       }
-
+      /*-----------------------[ NEW VERSION NWJS]----------------------*/
       var fs = require('fs');
-      fs.writeFile("test.js", "Hey there!", function(err) {
-          if(err) {
-              return console.log(err);
-          }
-
-          console.log("The file was saved!");
-      }); 
+      fs.writeFile(filename, JSON.stringify(save), function(err) {
+        if (err) {
+          return console.log(err);
+        }
+        return console.log('saved '+filename);
+      });
       /****************************************************************************************/
     };
 

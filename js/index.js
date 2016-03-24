@@ -22,6 +22,8 @@
     popupLoadClass = new PopupLoadClass();
     /************************[ ADDED : IMPORT ]*************************/
     var popupImport = new PopupImport();
+    //test
+    var $datas;
     /*******************************************************************/
     clearAll = function() {
       table.clear();
@@ -171,35 +173,6 @@
         return clearAll();
       }
     });
-    /*$('#open_button').on({
-      click: function() {
-        /*************************************[ CHARGEMENT FICHIER ]*************************************
-        var k, key, len, ref, saves;
-        var fileToOpen = air.File.documentsDirectory.resolvePath("Editor");
-        var txtFilter = new air.FileFilter("Text", "*.as;*.css;*.html;*.txt;*.xml; *.json");
-
-        try {
-          fileToOpen.browseForOpen("Open", [txtFilter]);
-          fileToOpen.addEventListener(air.Event.SELECT, function(event) {
-            var stream = new air.FileStream();
-            stream.open(event.target, air.FileMode.READ);
-            var fileData = stream.readUTFBytes(stream.bytesAvailable);
-            clearAll();
-            return saver.restoreData(JSON.parse(fileData.toString()), createNotion, createClass, createInstance);
-          });
-        } catch (error) {
-          air.trace("Failed:", error.message);
-        }
-        /************************************************************************************************
-      }
-      change: function() {
-        alert("heeeeeey !");
-      }
-
-    });*/
-/*    document.getElementById("open_button").onclick = function () {
-      alert('hello!'); 
-    };*/
     $('#fake_open_button').on({
       click: function() {
         $('#open_button').click();
@@ -215,7 +188,6 @@
         if (!fs.existsSync(dir)){
             fs.mkdirSync(dir);
         }
-        console.log(dir);
         this.nwworkingdir = dir;
       },
       change: function() {
@@ -225,8 +197,25 @@
           if (err) {
             return console.log(err);
           }
+          clearAll();
           return saver.restoreData(JSON.parse(data), createNotion, createClass, createInstance);
         });
+      }
+    });
+    $('#save2_button').on({
+      click: function() {
+        //ensure that the browser starts in the right directory
+        var fs = require('fs');
+        var os = require('os');
+        var path = require('path');
+        var dir = os.homedir()+path.sep+"Editor";
+        if (!fs.existsSync(dir)){
+            fs.mkdirSync(dir);
+        }
+        this.nwworkingdir = dir;
+      },
+      change: function() {
+        return saver.save(this.value, $datas);
       }
     });
     $('#save_button').on({
@@ -234,20 +223,20 @@
         popupSaver.create(notionFactory.getNotions());
         popupSaver.getNode().on({
           saverSet: function(e, to_save) {
-            return saver.save(to_save);
+            $datas = to_save;
+            $('#save2_button').click();
+            //return saver.save(to_save);
           }
         });
         return popupSaver.show();
       }
     });
-    /************************[ ADDED : IMPORT ]*************************/
     $('#import_button').on({
       click: function() {
         popupImport.create();
         return popupImport.show();
       }
     });
-    /*******************************************************************/
     $('#tags_button').on({
       click: function() {
         popupTags.create(tagsManager.getTags());

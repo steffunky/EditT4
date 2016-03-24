@@ -48,12 +48,12 @@
   </nav>
 
   <!-- Open File (Hidden : triggered by fake_open_button in the topbar) -->
-  <div class="fileinput fileinput-new" data-provides="fileinput" hidden>
-    <span class="btn btn-default btn-file">
-      <span>Choose file</span>
+  <div hidden>
       <input id='open_button' type="file" class="filestyle" data-input="false"/>
-    </span>
-    <span class="fileinput-filename"></span>
+  </div>
+
+  <div hidden>
+      <input id='save2_button' type="file" class="filestyle" data-input="false" nwsaveas="filename.txt"/>
   </div>
 
     
