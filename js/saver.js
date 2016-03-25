@@ -101,28 +101,6 @@
         save.tagsConf = this.tagsManager.getTagsConf();
       }
 
-      /*************************************[ SAUVEGARDE ]*************************************
-
-      -----------------------[ OLD VERSION ]----------------------
-      return localStorage[save.name] = JSON.stringify(save);
-
-      -----------------------[ NEW VERSION AIR API]----------------------*/
-/*    var directory = air.File.documentsDirectory.resolvePath("Editor"); 
-      directory.createDirectory();
-      var docsDir = air.File.documentsDirectory.resolvePath('Editor/'+save.name+'.json');
-      try {
-        docsDir.browseForSave("Save As");
-        docsDir.addEventListener(air.Event.SELECT, function(event) {
-          var newFile = event.target ;
-          var stream = new air.FileStream();
-          stream.open(newFile, air.FileMode.WRITE);
-          stream.writeUTFBytes(JSON.stringify(save));
-          stream.close();
-        });
-      } catch (error) {
-        air.trace("Failed:", error.message)
-      }
-      /*-----------------------[ NEW VERSION NWJS]----------------------*/
       var fs = require('fs');
       fs.writeFile(filename, JSON.stringify(save), function(err) {
         if (err) {
@@ -130,7 +108,6 @@
         }
         return console.log('saved '+filename);
       });
-      /****************************************************************************************/
     };
 
     Saver.prototype.restoreData = function(restore, createNotion, createClass, createInstance) {

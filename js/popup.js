@@ -80,18 +80,10 @@
       return $element;
     };
 
-    Popup.prototype.createInputFile = function(text) {
-      var $element;
-      $element = $('<input></input>').attr('type', 'file').text(text);
-      console.log($element);
-      return $element;
-    };
-
-    Popup.prototype.createInputFileSave = function() {
-      var $input = $('<input></input>').attr('type', 'file').attr('nwsaveas', 'file.json');
-      console.log($input);
-      var $element = $('<div hidden></div>').append($input);
-      return $element;
+    Popup.prototype.createInputFileSave = function(id) {
+      var $input;
+      $input = $('<input></input>').attr('type', 'file').attr('nwsaveas', 'file.json');
+      return $input;
     };
 
     Popup.prototype.createLabel = function(for_element_id, text) {

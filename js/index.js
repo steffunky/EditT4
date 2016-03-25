@@ -189,9 +189,10 @@
             fs.mkdirSync(dir);
         }
         this.nwworkingdir = dir;
+        //resolve problem : onchange event is triggered even if the user choose the same file
+        this.value = null;
       },
       change: function() {
-        //console.log(this.value);
         var fs = require('fs');
         fs.readFile(this.value, 'utf8', function (err,data) {
           if (err) {
@@ -202,30 +203,12 @@
         });
       }
     });
-    $('#save2_button').on({
-      click: function() {
-        //ensure that the browser starts in the right directory
-        var fs = require('fs');
-        var os = require('os');
-        var path = require('path');
-        var dir = os.homedir()+path.sep+"Editor";
-        if (!fs.existsSync(dir)){
-            fs.mkdirSync(dir);
-        }
-        this.nwworkingdir = dir;
-      },
-      change: function() {
-        return saver.save(this.value, $datas);
-      }
-    });
     $('#save_button').on({
       click: function() {
         popupSaver.create(notionFactory.getNotions());
         popupSaver.getNode().on({
-          saverSet: function(e, to_save) {
-            $datas = to_save;
-            $('#save2_button').click();
-            //return saver.save(to_save);
+          saverSet: function(e, filename, to_save) {
+            return saver.save(filename, to_save);
           }
         });
         return popupSaver.show();
