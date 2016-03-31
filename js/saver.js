@@ -8,7 +8,38 @@
     }
 
     Saver.prototype.save = function(filename, to_save) {
-      var $node, $td, $tds, $tr, $trs, act_rowspan, candidate_notion, class_to_save, diff, i, instance, instance_to_save, j, k, l, len, len1, len2, m, my_class, n, next_rowspan, notion, notion_to_save, notions, o, ref, ref1, ref2, ref3, save, table;
+      var $node,
+          $td,
+          $tds,
+          $tr,
+          $trs,
+          act_rowspan,
+          candidate_notion,
+          class_to_save,
+          diff,
+          i,
+          instance,
+          instance_to_save,
+          j,
+          k,
+          l,
+          len,
+          len1,
+          len2,
+          m,
+          my_class,
+          n, 
+          next_rowspan,
+          notion,
+          notion_to_save,
+          notions,
+          o,
+          ref,
+          ref1,
+          ref2,
+          ref3,
+          save,
+          table;
       save = {
         name: to_save['name'],
         description: to_save['description'],
@@ -17,6 +48,8 @@
         tags: null,
         tagsColor: null
       };
+
+      // Save notions, classes and instances (with their positions in the table)
       notions = this.notionFactory.getNotions();
       for (k = 0, len = notions.length; k < len; k++) {
         notion = notions[k];
@@ -32,6 +65,7 @@
           class_instances: []
         };
         ref = notion.getClassInstances();
+        // Save classes
         for (l = 0, len1 = ref.length; l < len1; l++) {
           my_class = ref[l];
           if (candidate_notion.classes === false) {
@@ -43,6 +77,7 @@
           };
           notion_to_save.class_instances.push(class_to_save);
           ref1 = my_class.getInstances();
+          // Save instances
           for (m = 0, len2 = ref1.length; m < len2; m++) {
             instance = ref1[m];
             if (candidate_notion.instances === false) {
@@ -64,6 +99,7 @@
         }
         save.notions.push(notion_to_save);
       }
+      // Save the structure of the table (number of rows, which cells are splitted...)
       if (to_save.structure === true) {
         table = {
           lineNumber: this.table.getLineNumber(),
@@ -110,24 +146,35 @@
       });
     };
 
+    // restore is a hash
+    // createNotion, createClass and createInstance are functions
+    // createNotion(notion_name, class_values, instance_values)
+    // createClass(notion_name, notion, class_attributes)
+    // createInstance(notion_name, my_class, instance_attributes, instance_tags, line, column)
     Saver.prototype.restoreData = function(restore, createNotion, createClass, createInstance) {
       var $element, attribute, create_instance, create_instances, display_attribute, i, instance, k, l, len, len1, len2, len3, len4, m, my_class, n, notion, o, p, ref, ref1, ref2, restore_class_instance, restore_class_instances, restore_instance, restore_notion, restore_notions, restore_table, results, to_split;
       restore_notions = restore.notions;
       create_instances = [];
+
+      // Set the tags and tag colors to the manager
+      // Before all ! (for example new instances will use this)
       if ((restore.tags != null)) {
         this.tagsManager.setTags(restore.tags);
         this.tagsManager.setTagsConf(restore.tagsConf);
       }
       for (k = 0, len = restore_notions.length; k < len; k++) {
+        // Create the notion and set the display attributes
         restore_notion = restore_notions[k];
         notion = createNotion(restore_notion['name'], restore_notion['class_attributes_model'], restore_notion['instance_attributes_model']);
         for (attribute in restore_notion['display_attributes']) {
           display_attribute = restore_notion['display_attributes'][attribute];
           notion.updateDisplayAttributes(attribute, display_attribute['cell'], display_attribute['tooltip']);
         }
+        // Create the class instances
         restore_class_instances = restore_notion['class_instances'];
         for (l = 0, len1 = restore_class_instances.length; l < len1; l++) {
           restore_class_instance = restore_class_instances[l];
+          // Create the class
           my_class = createClass(notion.getName(), notion, restore_class_instance['class_attributes']);
           ref = restore_class_instance['instances'];
           for (m = 0, len2 = ref.length; m < len2; m++) {
@@ -140,22 +187,27 @@
               line: restore_instance['line'],
               column: restore_instance['column']
             };
+            // Keep in mind the attributes of the instances (with their positions etc)
+            // We can't create it for now because we need to create the table before
             create_instances.push(create_instance);
           }
         }
       }
+      // Create the table
       if ((restore.structure != null)) {
         restore_table = restore.structure;
         for (i = n = 1, ref1 = restore_table['lineNumber'] - 1; n <= ref1; i = n += 1) {
           this.table.addRow();
         }
         ref2 = restore_table.split;
+        // Split cells
         for (o = 0, len3 = ref2.length; o < len3; o++) {
           to_split = ref2[o];
           $element = this.table.getTableNode().find("tr:eq(" + to_split.line + ") td:eq(" + to_split.column + ")");
           this.table.splitCell($element, to_split.number_of_splits);
         }
         results = [];
+        // Create and put in the right cells the instances
         for (p = 0, len4 = create_instances.length; p < len4; p++) {
           instance = create_instances[p];
           results.push(createInstance(instance['notion_name'], instance['my_class'], instance['instance_attributes'], instance['instance_tags'], instance['line'], instance['column']));
@@ -164,6 +216,7 @@
       }
     };
 
+    //TODO : Delete
     /**************[ Not used anymore]**************/
     Saver.prototype.getSaves = function() {
       var k, key, len, ref, saves;
