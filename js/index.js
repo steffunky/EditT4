@@ -2,9 +2,22 @@
 //TODO : Add commentaries
 (function() {
   $(function() {
-    var $notion, applyListenersOnNewPopup, applyListenersOnNotionFactory, clearAll, contextMenuItem, contextMenuTable, createClass, createInstance, createNotion, createPopupClass, createPopupLoadClass, dnd, instanceEvents, notionFactory, popupClass, popupDisplay, popupFilter, popupInstance, popupLoadClass, popupLoadNotion, popupNotions, popupRestore, popupSaver, popupTags, saver, table, tagsManager;
+    var $notion,          applyListenersOnNewPopup, applyListenersOnNotionFactory,
+        clearAll,         contextMenuItem,          contextMenuTable,
+        createClass,      createInstance,           createNotion,
+        createPopupClass, createPopupLoadClass,     dnd,
+        instanceEvents,   notionFactory,            popupClass,
+        popupDisplay,     popupFilter,              popupInstance,
+        popupLoadClass,   popupLoadNotion,          popupNotions,
+        popupRestore,     popupSaver,               popupTags,
+        saver,            table,                    tagsManager,
+        popupImport;
+
+    // Nodes
     $notion = $('#notions');
+    //Objects. Instanciate popups at the beginning since we could call them many times
     table = new Table();
+    // 10 splits max of a cell
     contextMenuTable = new ContextMenuTable(table, 10);
     contextMenuItem = new ContextMenuItem(table);
     notionFactory = new NotionFactory($notion);
@@ -21,37 +34,45 @@
     popupRestore = new PopupRestore();
     popupLoadNotion = new PopupLoadNotion();
     popupLoadClass = new PopupLoadClass();
-    /************************[ ADDED : IMPORT ]*************************/
-    var popupImport = new PopupImport();
-    /*******************************************************************/
+    popupImport = new PopupImport();
+    
+    // Clear the table and the notions
     clearAll = function() {
       table.clear();
       notionFactory.clear();
       return tagsManager.clear();
     };
+    // Create and open the popup class
     createPopupClass = function(notion, notion_name, model, attributes) {
       popupClass.create(notion_name, model, attributes);
       popupClass.show();
+      // When the class is created
       return popupClass.getNode().on({
         classCreated: function(e, class_attributes) {
           return createClass(notion_name, notion, class_attributes);
         }
       });
     };
+    // Create and open the popup load class
     createPopupLoadClass = function(notion, notion_name) {
       popupLoadClass.create(saver.getSaves(), notion_name, notion.getClassAttributesModel(), notion.getInstanceAttributesModel());
       popupLoadClass.show();
+      // When the class is created
       return popupLoadClass.getNode().on({
         loadClass: function(e, my_class) {
           return createClass(notion_name, notion, my_class['class_attributes']);
         }
       });
     };
+    // Create a new notion
     createNotion = function(notion_name, class_values, instance_values) {
       var $notion_node, notion;
+      // We create the notion from the notionFactory
       notion = notionFactory.createNotion(notion_name, class_values, instance_values);
+      // Get the node and append it to our notion root
       $notion_node = notion.getNotionNode();
       $notion.append($notion_node);
+      // When the user want to create a class
       $notion_node.on({
         addClass: function() {
           return createPopupClass(notion, notion_name, class_values, class_values);
@@ -63,15 +84,18 @@
       table.addColumn(notion_name);
       return notion;
     };
+    // Create a new class
     createClass = function(notion_name, notion, class_attributes) {
       var class_instance;
       class_instance = notion.createClass(class_attributes);
       class_instance.getClassNode().on({
+        // Want to modify the class ?
         dblclick: function() {
           var $popupclass;
           popupClass.create(notion_name, class_instance.getClassAttributesModel(), class_instance.getClassAttributes(), 'Modify');
           popupClass.show();
           $popupclass = popupClass.getNode();
+          // When the class is created
           return $popupclass.on({
             classCreated: function(e, class_attributes) {
               var key, results, val;
@@ -84,12 +108,14 @@
             }
           });
         },
+        // When an instance will be created from this class
         instanceCreated: function(e, instance) {
           return instanceEvents(notion_name, instance, true);
         }
       });
       return class_instance;
     };
+    // Create a new instance
     createInstance = function(notion_name, my_class, instance_attributes, instance_tags, line, column) {
       var $element, $target, instance;
       instance = my_class.createInstance(instance_tags, true);
@@ -99,13 +125,19 @@
       table.createItem($element, $target);
       return instanceEvents(notion_name, instance, false);
     };
+    // Apply some events to the instance
+    // open -> true : automatically open a popup to edit informations of the instance
     instanceEvents = function(notion_name, instance, open) {
+      // Function to set the attributes of an instance
       var setInstanceAttribute;
       setInstanceAttribute = function() {
         var $popupinstance;
+        // Create a popup
         popupInstance.create(notion_name, instance.getClassAttributes(), instance.getInstanceAttributesModel(), instance.getInstanceAttributes(), instance.getInstanceTags());
+        // Show it
         popupInstance.show();
         $popupinstance = popupInstance.getNode();
+        // When it will be set, modify the instance attributes
         return $popupinstance.on({
           instanceSet: function(e, instance_attributes, instance_tags) {
             instance.setInstanceAttributesValues(instance_attributes);
@@ -126,6 +158,7 @@
         return setInstanceAttribute();
       }
     };
+    // Apply some listeners to the popup new
     applyListenersOnNotionFactory = function(factory) {
       return factory.getNotionFactoryNode().on({
         addNotion: function() {
@@ -143,6 +176,7 @@
           });
           return popupNotions.show();
         },
+        //TODO : delete ?
         loadNotion: function() {
           popupLoadNotion.create(saver.getSaves());
           popupLoadNotion.getNode().on({
@@ -188,7 +222,7 @@
             fs.mkdirSync(dir);
         }
         this.nwworkingdir = dir;
-        //resolve problem : onchange event is triggered even if the user choose the same file
+        //resolve problem : onchange event will be triggered even if the user choose the same file
         this.value = null;
       },
       change: function() {
@@ -286,6 +320,7 @@
             }
             ref = notionFactory.getNotions();
             results = [];
+            // Great complexity. Web workers ?
             for (j = 0, len = ref.length; j < len; j++) {
               notion = ref[j];
               results.push((function() {
@@ -295,8 +330,11 @@
                 for (k = 0, len1 = ref1.length; k < len1; k++) {
                   instance = ref1[k];
                   add_instance = true;
+                  // We check if each constraint is ok
                   for (text in filters) {
                     contains = filters[text];
+                    // By default, we say "the constraint is not ok unless we have an attribute which contains the text we want"
+                    // By default, we say "the constraint is ok unless we have an attribute which contains the text we don't want"
                     constraint_ok = !contains;
                     ref2 = Utils.merge(instance.getClassAttributes(), instance.getInstanceAttributes());
                     for (name in ref2) {
@@ -339,8 +377,10 @@
         return table.setMouseDown(false);
       }
     });
+    // Build the table (header, evenements), append to our page and apply listeners
     table.buildTable();
     $('#mytable').append(table.getTableNode());
+    // Notion factory
     return applyListenersOnNotionFactory(notionFactory);
   });
 

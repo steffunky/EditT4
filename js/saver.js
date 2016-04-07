@@ -8,38 +8,18 @@
     }
 
     Saver.prototype.save = function(filename, to_save) {
-      var $node,
-          $td,
-          $tds,
-          $tr,
-          $trs,
-          act_rowspan,
-          candidate_notion,
-          class_to_save,
-          diff,
-          i,
-          instance,
-          instance_to_save,
-          j,
-          k,
-          l,
-          len,
-          len1,
-          len2,
-          m,
-          my_class,
-          n, 
-          next_rowspan,
-          notion,
-          notion_to_save,
-          notions,
-          o,
-          ref,
-          ref1,
-          ref2,
-          ref3,
-          save,
-          table;
+      var $node,            $td,            $tds,
+          $tr,              $trs,           act_rowspan,
+          candidate_notion, class_to_save,  diff,
+          i,                instance,       instance_to_save,
+          j,                k,              l,
+          len,              len1,           len2,
+          m,                my_class,       n, 
+          next_rowspan,     notion,         notion_to_save,
+          notions,          o,              ref,
+          ref1,             ref2,           ref3,
+          save,             table;
+
       save = {
         name: to_save['name'],
         description: to_save['description'],
@@ -152,7 +132,18 @@
     // createClass(notion_name, notion, class_attributes)
     // createInstance(notion_name, my_class, instance_attributes, instance_tags, line, column)
     Saver.prototype.restoreData = function(restore, createNotion, createClass, createInstance) {
-      var $element, attribute, create_instance, create_instances, display_attribute, i, instance, k, l, len, len1, len2, len3, len4, m, my_class, n, notion, o, p, ref, ref1, ref2, restore_class_instance, restore_class_instances, restore_instance, restore_notion, restore_notions, restore_table, results, to_split;
+      var $element,         attribute,          create_instance,
+          create_instances, display_attribute,  i,
+          instance,         k,                  l,
+          len,              len1,               len2,
+          len3,             len4,               m,
+          my_class,         n,                  notion,
+          o,                p,                  ref,
+          ref1,             ref2,               restore_class_instance,
+          restore_class_instances,              restore_instance, 
+          restore_notion,   restore_notions,    restore_table,
+          results,          to_split;
+
       restore_notions = restore.notions;
       create_instances = [];
 
