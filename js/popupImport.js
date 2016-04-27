@@ -50,25 +50,7 @@
       //TODO : read file 
       console.log(file);
       var fs = require('fs');
-      var data;
-
-      var $group = this.createFieldset('Cell display');
-
-      //synchronous because we want to use the data below
-      fs.readFileSync(file, 'utf8', function (err,data) {
-        if (err) {
-          return console.log(err);
-        }
-        console.log('data :');
-        console.log(data);
-        //parse to JSON
-        data = JSON.parse(data);
-        console.log('data after :');
-        console.log(data);
-      });//TODO : catch error ?
-
-
-/*
+      var data = JSON.parse(fs.readFileSync(file));
 
       //TODO : display content
       //notions :
@@ -76,20 +58,11 @@
       console.log(data);
       var file_notions = data.notions;
 
-      var notion;
-      for (var i = 0, len = file_notions.length; i < len; i++) {
-        notion = file_notions[i];
-        console.log(i + 'e notions :' + notion['name']);
-      }
-
       var $body = $('<div></div>');
 
+      // Cell/tooltip display
       var $group = this.createFieldset('Cell display');
       $group.attr('id', 'cell_display');
-      
-      // Cell/tooltip display
-      //TODO : Ca casse tout !
-      //$group.attr('id', 'cell_display');
       
       // Create table
 
@@ -108,8 +81,8 @@
           instance = instances[j];
           console.log(instance);
         }
-
-        ref = notion.getDisplayAttributes();
+/*
+        ref = notion.getClassAttributesModel();
         
         // Create lines
         for (attribute in ref) {
@@ -127,12 +100,12 @@
             $tr.append($td);
           }
           $table.append($tr);
-        }
+        }*/
         $group.append($table);
       }
-      $body.append($group);*/
+      $body.append($group);
 
-      return $open_block.append('<p>JE VOUDRAIS JUSTE TESTER ENCORE MERCI</p>');
+      return $open_block.append($body);
     };
 
     // Show the popup
