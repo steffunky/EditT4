@@ -44,25 +44,33 @@
       $open_block.append($open_file);
       $open_block.append($display_block);
 
+      // Menu (validate, close...)
+      $create_button = this.createButton('Save', true);
+      $create_button.on({
+        click: (function(_this) {
+          return function() {
+            _this.$popupimport.trigger('importSet', null);
+            return _this.close();
+          };
+        })(this)
+      });
       $close_button = this.createCloseButton();
-      this.$popupimport = this.createPopup([this.createTitle('Import')], $open_block, $close_button);
+      $menu = $('<div></div>').append([$create_button, $close_button]);
+
+      this.$popupimport = this.createPopup([this.createTitle('Import')], $open_block, [$menu], 'import');
       return this.applyCloseButtonEvents($close_button, this.$popupimport);
     };
 
     // Load data from file
     PopupImport.prototype.load = function(file, $display_block) {
-      //TODO : read file 
-      console.log(file);
+
       var fs = require('fs');
       var data = JSON.parse(fs.readFileSync(file));
 
-      //TODO : display content
       //notions :
-      console.log('data out :');
-      console.log(data);
-      var file_notions = data.notions;
+      var notions = data.notions;
 
-      var $body = $('<div></div>');
+      var $body = $('<div></div>').addClass('modal-body');
 
       // Cell/tooltip display
       var $group = this.createFieldset('Import from ' + file.replace(/^.*[\\\/]/, ''));
@@ -71,27 +79,24 @@
       // Create table
 
       //for each notion
-      for (var i = 0, len = file_notions.length; i < len; i++) {
+      for (var i = 0, len = notions.length; i < len; i++) {
 
-        notion = file_notions[i];
+        notion = notions[i];
         var $title = $('<caption></caption>').text(notion['name']);
+        $input = this.createCheckbox('', i, null);
+        $title.prepend($input);
         var $tr = $('<tr></tr>');
-        $tr.append($('<th></th>').text('Cell'));
         var $table = $('<table></table>').addClass('table_notion_display').append([$title, $tr]);
 
         instances = notion['class_instances'];
-        console.log(instances);
         var instance;
         var ci;
 
         // Create lines
-
-        console.log('instances de j');
         for (var j = 0; j < instances.length; j++) {
+          
           instance = instances[j];
-          console.log(instance);
           ci = instance['class_attributes'];
-          console.log(ci);
           display = instances[ci];
           $tr = $('<tr></tr>');
           key = 'cell';

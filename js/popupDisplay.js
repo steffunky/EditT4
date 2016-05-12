@@ -98,7 +98,11 @@
       $create_button.on({
         click: (function(_this) {
           return function() {
-            var $inputs, $line, $notion, k, l, len2, len3, len4, line, m, notion_display, notions_display, ref2, ref3, ref4, tags, tr;
+            var $inputs,  $line,  $notion,  k,
+                l,        len2,   len3,     len4,
+                line,     m,      notion_display,
+                notions_display,  ref2,     ref3,
+                ref4,     tags,   tr;
             notions_display = [];
             tags = {};
             ref2 = $body.find('.table_notion_display');

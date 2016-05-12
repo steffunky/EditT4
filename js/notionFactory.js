@@ -48,7 +48,9 @@
         notion.addInstanceAttributeModel(key, value);
       }
       this.notions.push(notion);
+      // /!\ notionCreated relative to draganddrop.js, not index.js
       this.$notionFactory.trigger('notionCreated', [notion]);
+
       return notion;
     };
 

@@ -206,7 +206,7 @@
         return clearAll();
       }
     });
-    $('#fake_open_button').on({
+    $('#alias_open_button').on({
       click: function() {
         $('#open_button').click();
       }
@@ -222,7 +222,7 @@
             fs.mkdirSync(dir);
         }
         this.nwworkingdir = dir;
-        //resolve problem : onchange event will be triggered even if the user choose the same file
+        //resolve problem : onchange event was not triggered if the user choose the same file
         this.value = null;
       },
       change: function() {
@@ -250,6 +250,11 @@
     $('#import_button').on({
       click: function() {
         popupImport.create();
+        popupImport.getNode().on({
+          importSet: function(e, blabla) {    
+            createNotion("Import_Placeholder", null, null);
+          }
+        });
         return popupImport.show();
       }
     });

@@ -87,7 +87,7 @@
       var class_instance, key, name, value;
       name = class_attributes_values['name'];
       if (name === "") {
-        console.error('Class name should be empty');
+        console.error('Class name should not be empty');
         return;
       }
       class_instance = new Class(this.name, name, this.class_attributes_model, this.instance_attributes_model, this.display_attributes);
