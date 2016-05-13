@@ -22,46 +22,55 @@
       this.elementType = "";
       this.isChrome = /chrom(e|ium)/.test(navigator.userAgent.toLowerCase());
       this.table.getTableNode().on({
+        // When the table will be built, apply the events
         tableBuilt: (function(_this) {
           return function() {
             return _this.applyEvents();
           };
         })(this),
+        // If an item have been moved, reapply the events on this
         itemMoved: (function(_this) {
           return function(e, $item) {
             return _this.applyItemEvents($item);
           };
         })(this),
+        // If an item have been created, reapply the events on this
         itemCreated: (function(_this) {
           return function(e, $item) {
             return _this.applyItemEvents($item);
           };
         })(this),
+        // If a row have been moved, reapply the events on this
         rowMoved: (function(_this) {
           return function(e, $row) {
             return _this.applyRowEvents($row);
           };
         })(this),
+        // If a row have been created, reapply the events on this
         rowCreated: (function(_this) {
           return function(e, $row) {
             return _this.applyRowEvents($row);
           };
         })(this),
+        // If a cell have been moved, reapply the events on this
         cellMoved: (function(_this) {
           return function(e, $cell) {
             return _this.applyCellEvents($cell);
           };
         })(this),
+        // If a cell have been created, reapply the events on this
         cellCreated: (function(_this) {
           return function(e, $cell) {
             return _this.applyCellEvents($cell);
           };
         })(this),
+        // If the header have been moved, reapply the events on this
         headerCellMoved: (function(_this) {
           return function(e, $headerCell) {
             return _this.applyHeaderCellEvents($headerCell);
           };
         })(this),
+        // If the header have been created, reapply the events on this
         headerCellCreated: (function(_this) {
           return function(e, $headerCell) {
             return _this.applyHeaderCellEvents($headerCell);
@@ -69,6 +78,7 @@
         })(this)
       });
       this.notionFactory.getNotionFactoryNode().on({
+        // If a notion have been created, when a class will be built with this notion apply drag events
         notionCreated: (function(_this) {
           return function(e, notion) {
             return notion.getNotionNode().on({
@@ -81,6 +91,7 @@
       });
     }
 
+    // Check if the destination is the same than the dragged element
     Dnd.prototype.isTheDraggedElement = function($target) {
       if ($target.is(this.$draggedElement)) {
         return true;
@@ -88,6 +99,7 @@
       return false;
     };
 
+    // Hack to get a ghost of our element we drag
     Dnd.prototype.setGhost = function($clonedElement, e) {
       this.$ghost = $clonedElement;
       if (this.isChrome) {
@@ -133,9 +145,11 @@
           var $clonedElement, $my_elem, column;
           _this.table.setMouseDown(false);
           _this.draggedClass = dragged_class != null ? dragged_class : null;
+          // If the user wants to move a column
           if ($(e.target).hasClass('column')) {
             _this.elementType = COLUMN;
             _this.$draggedElement = $(e.target);
+            // Build the column for the ghost image
             column = _this.table.getNumColumn(_this.$draggedElement);
             $my_elem = $('<table></table>');
             _this.table.getColumn(column).each(function(i, elem) {
@@ -145,6 +159,7 @@
               return $my_elem.append($line);
             });
             _this.setGhost($my_elem, e);
+          // Or a row
           } else if ($(e.target).hasClass('row')) {
             $clonedElement = $(e.target).parent('tr').clone();
             $my_elem = $('<table></table>');
@@ -152,18 +167,23 @@
             _this.setGhost($my_elem, e);
             _this.elementType = ROW;
             _this.$draggedElement = $(e.target).parent('tr');
+          // A class
           } else if ($(e.target).hasClass('notion_class')) {
             _this.elementType = CLASS;
             _this.$draggedElement = $(e.target);
+          // Or if he wants to move an item
           } else {
             _this.elementType = ITEM;
             _this.$draggedElement = $(e.target);
             _this.$draggedElement.parent().removeClass('selected');
           }
-          return e.originalEvent.dataTransfer.setData('text/plain', '');
+          return e.originalEvent.dataTransfer.setData('text/plain', ''); //# Needed by Firefox (<3)
         };
       })(this);
+      // In the case where it's not the case (trololo)
       $element.attr('draggable', 'true');
+      
+      // Save the dragged element, and its type in dndHandler's variables
       return $element.on({
         dragstart: onDrag
       });
@@ -214,24 +234,31 @@
           if (_this.draggedClass == null) {
             $clonedElement = $draggedElement.clone();
           }
+          // Remove the ghost if it exists
           if ((_this.$ghost != null)) {
             _this.$ghost.remove();
             _this.$ghost = null;
           }
+          
+          // If it's a column
           if (_this.elementType === COLUMN) {
             $target = $(e.target);
+            // Be sure we target a td/th element
             while (!$target.is('tr, th')) {
               $target = $target.parent();
             }
             _this.table.moveColumn($draggedElement, $clonedElement, $target);
+          // If it's a row
           } else if (_this.elementType === ROW) {
             $target = $(e.target).parent('tr');
             $target.removeClass('drag_hovering');
             if (_this.isTheDraggedElement($target) === false) {
               _this.table.moveRow($draggedElement, $clonedElement, $target);
             }
+          // If it's a class
           } else if (_this.elementType === CLASS) {
             $target = $(e.target);
+            // Maybe the user drop on another item (which is in a td cell), so just need to put the item in the parent cell
             if ($target.prop('tagName') !== 'TD') {
               $target = $target.parent('td');
             }
@@ -241,16 +268,21 @@
               $clonedElement = instance.getInstanceNode();
               _this.table.createItem($clonedElement, $target);
             }
+          // An item
           } else {
             $target = $(e.target);
+            // Maybe the user drop on another item (which is in a td cell), so just need to put the item in the parent cell
             if ($target.prop('tagName') !== 'TD') {
               $target = $target.parent('td');
             }
+            // Only move an item in a cell
             if (_this.table.getNumColumn($target) === _this.table.getNumColumn(_this.$draggedElement.parent('td')) && $target.hasClass('cell')) {
               _this.table.moveItem($draggedElement, $clonedElement, $target);
             }
           }
+          // Reset
           _this.draggedClass = null;
+          // MouseUp of document don't fire so set mouseDown manually
           return _this.table.setMouseDown(false);
         };
       })(this);

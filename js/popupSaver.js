@@ -12,35 +12,15 @@
     }
 
     PopupSaver.prototype.create = function(notions) {
-      var $body,
-          $closebutton,
-          $create_button,
-          $save_button,
-          $to_save,
-          $group,
-          $input_classes,
-          $input_instances,
-          $input_notion,
-          $input_save,
-          $label_description,
-          $label_save,
-          $label_structure,
-          $menu,
-          $hidden_fi,
-          $notion_name,
-          $save_class,
-          $save_instance,
-          $save_notion,
-          $structure_checkbox,
-          $table, $td_classes,
-          $td_instances,
-          $td_name,
-          $td_notion,
-          $text_description,
-          $tr,
-          i,
-          len,
-          notion;
+      var $body,              $closebutton,               $create_button,
+          $save_button,       $to_save,                   $group,
+          $input_classes,     $input_instances,           $input_notion,
+          $input_save,        $label_description,         $label_save,
+          $label_structure,   $menu,                      $hidden_fi,
+          $notion_name,       $save_class,                $save_instance,
+          $save_notion,       $structure_checkbox,        $table, $td_classes,
+          $td_instances,      $td_name,                   $td_notion,
+          $text_description,  $tr,       i,     len,      notion;
 
       $body = $('<div></div>').attr('id', 'popup_saver');
       

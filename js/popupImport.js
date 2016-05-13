@@ -1,5 +1,3 @@
-// Write by hand => use CoffeeScript ?
-//TODO : Add commentaries
 (function() {
   var extend = function(child, parent) {
     for (var key in parent) {
