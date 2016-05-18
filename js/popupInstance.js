@@ -61,7 +61,7 @@
         click: (function(_this) {
           return function() {
             var $elem, $inputs_class_instance, $inputs_tags, attributes_instance, elem, i, j, len, len1, tags_instance;
-            $inputs_class_instance = _this.$popupinstance.find('//instance_attributes select, //instance_attributes input');
+            $inputs_class_instance = _this.$popupinstance.find('#instance_attributes select, #instance_attributes input');
             attributes_instance = {};
             for (i = 0, len = $inputs_class_instance.length; i < len; i++) {
               elem = $inputs_class_instance[i];
@@ -69,7 +69,7 @@
               attributes_instance[$elem.attr('name')] = $elem.val();
             }
             tags_instance = {};
-            $inputs_tags = _this.$popupinstance.find('//instance_tags input');
+            $inputs_tags = _this.$popupinstance.find('#instance_tags input');
             for (j = 0, len1 = $inputs_tags.length; j < len1; j++) {
               elem = $inputs_tags[j];
               $elem = $(elem);

@@ -144,12 +144,15 @@
       });
       $closebutton = this.createCloseButton();
       $menu = $('<div></div>').append([$create_button, $closebutton]);
+      
       this.$popupdisplay = this.createPopup([this.createTitle('Display')], [$body], [$menu], 'display');
       this.applyCloseButtonEvents($closebutton, this.$popupdisplay);
+     
       this.$popupdisplay.css({
         'min-width': '400px',
         'max-width': '800px'
       });
+
       return this.$popupdisplay.on({
         close: (function(_this) {
           return function() {

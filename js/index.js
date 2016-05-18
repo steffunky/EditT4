@@ -248,7 +248,7 @@
     });
     $('#import_button').on({
       click: function() {
-        popupImport.create();
+        popupImport.create(notionFactory.getNotions());
         popupImport.getNode().on({
           importSet: function(e, blabla) {    
             createNotion("Import_Placeholder", null, null);

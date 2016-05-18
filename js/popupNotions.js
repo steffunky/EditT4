@@ -159,8 +159,8 @@
       } else {
         class_values = instance_values = null;
       }
-      this.createInputsClass($notion_name_input, class_values, $right.find('//class_attributes_block'));
-      return this.createInputsInstance($notion_name_input, instance_values, $right.find('//instance_attributes_block'));
+      this.createInputsClass($notion_name_input, class_values, $right.find('#class_attributes_block'));
+      return this.createInputsInstance($notion_name_input, instance_values, $right.find('#instance_attributes_block'));
     };
 
     // Create a new input for classnames of a notion according to saved values

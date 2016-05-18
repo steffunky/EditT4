@@ -102,7 +102,6 @@
       return $element;
     };
 
-    // Create an input file with the argument text and return it
     Popup.prototype.createInputFile = function(name_id) {
       var $element;
       $element = $('<input></input>').attr('type', 'file');
@@ -163,7 +162,7 @@
       return $element;
     };
 
-    // Create a row blocks with the bootstap classes
+    // Create a row blocks with the bootstrap classes
     Popup.prototype.createSideBlocks = function($elements, sizes) {
       var $div, $div_element, $elem, i, j, len;
       $div = $('<div></div>').addClass('row');
