@@ -58,20 +58,30 @@
 
       //for each notion
       for (var i = 0, len = notions.length; i < len; i++) {
-
         notion = notions[i];
-        var $title = $('<caption></caption>').text(notion['name']);
+
+        var $table = $('<table></table>').addClass('table table-condensed import_table_current');
         var $tr = $('<tr></tr>');
-        var $table = $('<table></table>').addClass('table_notion_display').append([$title, $tr]);
+        var $th;
+        var $thead = $('<thead></thead>');
+        var $tbody = $('<tbody></tbody>');
+
+        var $title = notion['name'];
+        //1rst col : notion's name
+        $th = $('<th></th>').addClass('table_import_align').append($title);
+        $tr.append($th);
+
+        $thead.append($tr);
+        $table.append($thead);
 
         for(var attribute in notion['class_attributes_model']) {
           $tr = $('<tr></tr>');
-          $label = $('<label></label>').addClass('label_display').text(attribute);
-          $td = $('<td></td>').append($label);
+          $td = $('<td></td>').append(attribute);
           $tr.append($td);
 
-          $table.append($tr);
+          $tbody.append($tr);
         }
+        $table.append($tbody);
         $group.append($table);
       }
       $left.append($group);
@@ -82,12 +92,13 @@
 
 
       //body : left = current project | right = import project
-      $body = this.createSideBlocks([$left, $right], [5, 5]);
+      $body = this.createSideBlocks([$left, $right], [6, 6]);
 
       //HEAD : title + file selector
       $header = $('<div></div>');
       $title = this.createTitle('Import');
       $header.append($title);
+
       $header.append($open_block);
 
       // Menu (validate, close...)
@@ -106,10 +117,10 @@
       this.$popupimport = this.createPopup([$header], [$body], [$menu], 'import');
       this.applyCloseButtonEvents($close_button, this.$popupimport);
 
-/*      this.$popupimport.css({
-        'min-width': '1200px',
-        'max-width': '1200px'
-      });*/
+      this.$popupimport.css({
+        'min-width': '800px'/*,
+        'max-width': '1200px'*/
+      });
 
       return this.$popupimport.on({
         close: (function(_this) {
@@ -141,13 +152,24 @@
 
       //for each notion
       for (var i = 0, len = notions.length; i < len; i++) {
-
         notion = notions[i];
-        var $title = $('<caption></caption>').text(notion['name']);
-        $input = this.createCheckbox('', i, null);
-        $title.prepend($input);
+
+        var $table = $('<table></table>').addClass('table table-condensed import_table_import');
         var $tr = $('<tr></tr>');
-        var $table = $('<table></table>').addClass('table table-condensed').append([$title, $tr]);
+        var $th;
+        var $thead = $('<thead></thead>');
+        var $tbody = $('<tbody></tbody>');
+
+        var $title = notion['name'];
+        //1rst col : notion's name
+        $th = $('<th></th>').append($title);
+        $tr.append($th);
+        //2nd col  : dropdown
+        $th = $('<th></th>').append($('<select><option>[current_notions]</option><option>new</option></select>'));
+        $tr.append($th);
+
+        $thead.append($tr);
+        $table.append($thead);
 
         // Create lines
 
@@ -155,16 +177,18 @@
 
         //1) attributes
         for(var attribute in notion['class_attributes_model']) {
+
           $tr = $('<tr></tr>');
-          $label = $('<label></label>').addClass('label_display').text(attribute);
           //1rst col : item's name
-          $td = $('<td></td>').append($label);
+          $td = $('<td></td>').append(attribute);
           $tr.append($td);
           //2nd col  : dropdown
-          $td = $('<td></td>').append('[_____dropdown_____]');
+          $td = $('<td></td>').append($('<select><option>[current_attributes]</option><option>new</option></select>'));
           $tr.append($td);                  
 
-          $table.append($tr);
+          //$table.append($tr);
+          $tbody.append($tr);
+          //$table.append($tbody);
         }
 
         //2) instances
@@ -172,27 +196,23 @@
         instances = notion['class_instances'];
         var instance;
         var ci;
-  
+
         for (var j = 0; j < instances.length; j++) {
-          
           instance = instances[j];
           ci = instance['class_attributes'];
           display = instances[ci];
           $tr = $('<tr></tr>');
           key = 'cell';
-          $label = $('<label></label>').addClass('label_display').text(ci['name']);
+          $label = ci['name'];
+          //checkbox
           $input = this.createCheckbox('', j, null);
-          $label.prepend($input);
           //1rst col : item's name
-          //$td = $('<td></td>').append($label);
-          $td = $('<td width="150"></td>').append($label);
-          $tr.append($td);
-          //2nd col  : dropdown
-          $td = $('<td></td>').append('[_____dropdown_____]');
-          $tr.append($td);  
+          $td = $('<td></td>').append([$input,ci['name']]);
+          $tr.append($td); 
 
-          $table.append($tr);
+          $tbody.append($tr);
         }
+        $table.append($tbody);
         $group.append($table);
       }
       $body.append($group);
