@@ -23,12 +23,11 @@
     PopupImport.prototype.create = function(notions) {
       var $close_button,          $create_notions_block,  $create_notions_button,
           $open_block,            $open_button,           $header,
-          $body,                  $left,                  $right;
+          $body,                  $left,                  $right,
+          $divider;
 
       $open_block = this.createBlock();
-      //$open_block.append($open_button);
 
-      //$right  = this.createBlock('Current project');
       $right = $('<div></div>');
       
       // file selector
@@ -37,22 +36,19 @@
         change: (function(_this) {
           return function() {
             //RIGHT : import project
-            return _this.displaySave(this.value, $right);
+            $right.empty();
+            return _this.displaySave(this.value, notions, $right);
           };
         })(this)
       });
+      $open_block.append('<br>');//TODO : TEST
       $open_block.append($open_file);
-
-
-
-
 
       //LEFT : Current Project
 
-      $left  = this.createBlock('Current project');
+      $left = this.createBlock('Current project');
       // Cell/tooltip display
       var $group = $('<div></div>');
-      //$group.attr('id', 'cell_display');
       
       // Create table
 
@@ -74,35 +70,54 @@
         $thead.append($tr);
         $table.append($thead);
 
+        //1) attributes
+        //a) desc
+        $td = $('<td></td>').addClass('import_descs').append('Attributes');
+        $tr = $('<tr></tr>').append($td);
+        $tbody.append($tr);
+        //b) items
         for(var attribute in notion['class_attributes_model']) {
-          $tr = $('<tr></tr>');
-          $td = $('<td></td>').append(attribute);
-          $tr.append($td);
-
+          $td = $('<td></td>').addClass('import_items_td').append(attribute);
+          $tr = $('<tr></tr>').addClass('import_items_th').append($td);
           $tbody.append($tr);
         }
+
+        //2) instances
+        //a) desc
+        $td = $('<td></td>').addClass('import_descs').append('Instances');
+        $tr = $('<tr></tr>').append($td); 
+        $tbody.append($tr);
+        //b) items
+        instances = notion['class_instances'];
+        for (var j = 0; j < instances.length; j++) {
+          instance = instances[j];
+          ci = instance['class_attributes'];
+          $td = $('<td></td>').addClass('import_items_td').append(ci['name']);
+          $tr = $('<tr></tr>').addClass('import_items_th').append($td); 
+          $tbody.append($tr);
+        }
+
         $table.append($tbody);
         $group.append($table);
       }
       $left.append($group);
 
-
-
-
-
-
       //body : left = current project | right = import project
       $body = this.createSideBlocks([$left, $right], [6, 6]);
+      //TODO : test divider
+      $divider = $('<div></div>').addClass('import_divider');
 
       //HEAD : title + file selector
       $header = $('<div></div>');
       $title = this.createTitle('Import');
       $header.append($title);
+      $header = this.createSideBlocks([$title, $open_block], [6, 6]);
+      //$header.append($open_file);
 
-      $header.append($open_block);
+      //$header.append($open_block);
 
       // Menu (validate, close...)
-      $create_button = this.createButton('Save', true);
+      $create_button = this.createButton('Confirm', true);
       $create_button.on({
         click: (function(_this) {
           return function() {
@@ -114,7 +129,7 @@
       $close_button = this.createCloseButton();
       $menu = $('<div></div>').append([$create_button, $close_button]);
 
-      this.$popupimport = this.createPopup([$header], [$body], [$menu], 'import');
+      this.$popupimport = this.createPopup([$header], [$body, $divider], [$menu], 'import');
       this.applyCloseButtonEvents($close_button, this.$popupimport);
 
       this.$popupimport.css({
@@ -132,7 +147,7 @@
     };
 
     // Load data from file
-    PopupImport.prototype.displaySave = function(file, $display_block) {
+    PopupImport.prototype.displaySave = function(file, current_notions, $display_block) {
 
       var fs = require('fs');
       var data = JSON.parse(fs.readFileSync(file));
@@ -140,13 +155,10 @@
       //notions :
       var notions = data.notions;
 
-      //var $body = $('<div></div>').addClass('modal-body');
-      var $body = this.createBlock(file.replace(/^.*[\\\/]/, ''));
+      var $body = this.createBlock('Import from : ' + file.replace(/^.*[\\\/]/, ''));
 
       // Cell/tooltip display
       var $group = $('<div></div>');
-/*      var $group = this.createFieldset('Import from ' + file.replace(/^.*[\\\/]/, ''));
-      $group.attr('id', 'cell_display');*/
       
       // Create table
 
@@ -157,15 +169,31 @@
         var $table = $('<table></table>').addClass('table table-condensed import_table_import');
         var $tr = $('<tr></tr>');
         var $th;
-        var $thead = $('<thead></thead>');
+        var $thead = $('<tbody></tbody>');
         var $tbody = $('<tbody></tbody>');
-
         var $title = notion['name'];
-        //1rst col : notion's name
+        
+        //1st col : notion's name
         $th = $('<th></th>').append($title);
         $tr.append($th);
-        //2nd col  : dropdown
-        $th = $('<th></th>').append($('<select><option>[current_notions]</option><option>new</option></select>'));
+        
+        //2nd col : dropdown
+        $select = $('<select></select>').addClass('import_dropdown');
+        // 1) "new" option
+        $option = $('<option></option>').append('New notion');
+        $select.append($option);
+        // 2) current notions
+        for(var j = 0; j < current_notions.length; ++j) {
+          current_notion = current_notions[j];
+          $option = $('<option></option>').append(current_notion['name']);
+          $select.append($option);
+        }
+        //TODO : listener onchange (update dropdown items)
+        $select.change(function() {
+          console.log('select='+i);
+        });
+
+        $th = $('<th></th>').addClass('import_dropdown_align').append($select);
         $tr.append($th);
 
         $thead.append($tr);
@@ -173,43 +201,52 @@
 
         // Create lines
 
-        console.log(notion);
-
         //1) attributes
+        //a) desc
+        $td = $('<td></td>').addClass('import_descs').append('Attributes');
+        $tr = $('<tr></tr>').append($td);
+        $tr.append('<td></td>');//TODO : empty, just to fit table size (2 columns)
+        $tbody.append($tr);
+        //b) items
         for(var attribute in notion['class_attributes_model']) {
+          //1st col : item's name
+          $td = $('<td></td>').addClass('import_items_td').append(attribute);
+          $tr = $('<tr></tr>').addClass('import_items_th').append($td);
+          //2nd col : dropdown
+          $select = $('<select></select>').addClass('import_dropdown');
+          // 1) "new" option
+          $option = $('<option></option>').append('New attribute');
+          $select.append($option);
+          // 2) current notions
+          for(var attribute in current_notions[0]['class_attributes_model']) {
+            $option = $('<option></option>').append('Merge with ' + attribute);
+            $select.append($option);
+          }          
 
-          $tr = $('<tr></tr>');
-          //1rst col : item's name
-          $td = $('<td></td>').append(attribute);
-          $tr.append($td);
-          //2nd col  : dropdown
-          $td = $('<td></td>').append($('<select><option>[current_attributes]</option><option>new</option></select>'));
-          $tr.append($td);                  
+          $td = $('<td></td>').addClass('import_items_td').append($select);
+          $tr.append($td);          
 
-          //$table.append($tr);
           $tbody.append($tr);
-          //$table.append($tbody);
         }
 
         //2) instances
-
+        //a) desc
+        $td = $('<td></td>').addClass('import_descs').append('Instances');
+        $tr = $('<tr></tr>').append($td); 
+        $tr.append('<td></td>');//TODO : empty, just to fit table size (2 columns)
+        $tbody.append($tr);
+        //b) items
         instances = notion['class_instances'];
         var instance;
         var ci;
-
         for (var j = 0; j < instances.length; j++) {
           instance = instances[j];
           ci = instance['class_attributes'];
-          display = instances[ci];
-          $tr = $('<tr></tr>');
-          key = 'cell';
-          $label = ci['name'];
-          //checkbox
           $input = this.createCheckbox('', j, null);
-          //1rst col : item's name
-          $td = $('<td></td>').append([$input,ci['name']]);
-          $tr.append($td); 
-
+          $td = $('<td></td>').addClass('import_items_td').append(ci['name']);
+          $tr = $('<tr></tr>').addClass('import_items_th').append($td);
+          $td = $('<td></td>').addClass('import_items_td').append($input);
+          $tr.append($td);
           $tbody.append($tr);
         }
         $table.append($tbody);

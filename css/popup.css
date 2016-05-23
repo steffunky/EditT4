@@ -18,6 +18,8 @@ textarea.form-control:not(.default) {
     top: -0.5px;
 }
 
+/* table_notion_display & table_tags_color */
+
 .table_notion_display {
     display: inline-block;
     margin: 20px;
@@ -35,18 +37,77 @@ textarea.form-control:not(.default) {
     height: 20px;
 }
 
-.table_tags_color select {
-    width: 100px;
-}
-
 .table_notion_display label {
     font-weight: normal !important;
     cursor: pointer;
 }
 
+.table_tags_color select {
+    width: 100px;
+}
+
 .table_tags_color td {
     text-align: left;   
 }
+
+/* table_import */
+
+/*.import_table_import {
+    margin-top: 40px;
+    width: 300px !important;
+    border:2px solid #E5E5E5;
+}*/
+
+.import_table_current, .import_table_import {
+    margin-top: 40px;
+    margin-left: 40px;
+    width: 300px !important;
+    border:2px solid #E5E5E5;
+}
+
+.import_table_import th, .import_table_current th {
+    color: gray;
+    background-color: #E5E5E5;
+    font-weight: bold !important;
+    text-align: left;
+    width: 150px !important;
+}
+
+.import_table_import td, .import_table_current td {
+    text-align: left;
+}
+
+.import_dropdown_align {
+    padding-left: 20px !important;
+}
+
+.import_dropdown {
+    width: 125px;
+}
+
+.import_descs {
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.import_items_td {
+    padding-left: 20px !important;
+    border: none !important;
+}
+
+.import_items_tr {
+    border: none !important;
+}
+
+.import_divider {
+    border-left:1px solid #E5E5E5; 
+    position:absolute;
+    height:100%;
+    left:50%;
+    top:0px; 
+}
+
+/* color_box */
 
 .color-box {
 	height: 20px;
