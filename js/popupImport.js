@@ -1,3 +1,21 @@
+/*
+Array[3]
+v "Eleve": Object
+  > mode : New
+  v Attributes
+    v Age : Object
+      > mode : merge
+      > target : Age
+    v Note : Object
+      > mode : Ignore
+      > target : null
+  v Instances
+    v 0: Object
+      > ...
+    v 1:..
+
+*/
+
 (function() {
   var extend = function(child, parent) {
     for (var key in parent) {
@@ -37,7 +55,11 @@
           return function() {
             //RIGHT : import project
             $right.empty();
-            return _this.displaySave(this.value, notions, $right);
+            var test = [];
+            /*return _this.displaySave(this.value, notions, $right, test);*/
+            _this.displaySave(this.value, notions, $right, test);
+            console.log("test =");
+            console.log(test);
           };
         })(this)
       });
@@ -104,7 +126,7 @@
 
       //body : left = current project | right = import project
       $body = this.createSideBlocks([$left, $right], [6, 6]);
-      //TODO : test divider
+
       $divider = $('<div></div>').addClass('import_divider');
 
       //HEAD : title + file selector
@@ -121,7 +143,45 @@
       $create_button.on({
         click: (function(_this) {
           return function() {
-            _this.$popupimport.trigger('importSet', null);
+            //TODO : complete
+            import_notions = [];
+            ref_body = $body.find('.import_table_import');
+            
+            //pour chaque notion
+            for (var k = 0; k < ref_body.length; k++) {
+              var notion = ref_body[k];
+              var $notion = $(notion);
+
+              import_attributes = [];
+              import_instances = [];
+
+              ref_tr = $notion.find('tr');
+
+              //pour chaque ligne
+              for (l = 0; l < ref_tr.length; l++) {
+                $tr = $(ref_tr[l]);
+                
+                if($tr.find('select').val() != null) {
+                  //Attributes
+                  $select = $tr.find('select');
+                  import_attributes[$tr.attr('id')] = $select.val();
+                } else if ($tr.find('input').prop('checked') != null) {
+                  //Instances
+                  $input = $tr.find('input');
+                  if($input.prop('checked') == true) {
+                    import_instances.push($tr.attr('id'));
+                  }
+                } else {
+                  //titles = no usefull information = do nothing
+                } 
+              }
+
+              var array = [];
+              array["Attributes"] = import_attributes;
+              array["Instances"] = import_instances;
+              import_notions[$notion.attr('id')] = array;
+            }            
+            _this.$popupimport.trigger('importSet', [import_notions]);
             return _this.close();
           };
         })(this)
@@ -147,10 +207,12 @@
     };
 
     // Load data from file
-    PopupImport.prototype.displaySave = function(file, current_notions, $display_block) {
+    PopupImport.prototype.displaySave = function(file, current_notions, $display_block, test) {
 
       var fs = require('fs');
       var data = JSON.parse(fs.readFileSync(file));
+
+      test["tamere"] = data;
 
       //notions :
       var notions = data.notions;
@@ -166,15 +228,14 @@
       for (var i = 0, len = notions.length; i < len; i++) {
         notion = notions[i];
 
-        var $table = $('<table></table>').addClass('table table-condensed import_table_import');
+        var $table = $('<table></table>').attr('id', notion['name']).addClass('table table-condensed import_table_import');
         var $tr = $('<tr></tr>');
         var $th;
-        var $thead = $('<tbody></tbody>');
+        var $thead = $('<thead></thead>');
         var $tbody = $('<tbody></tbody>');
-        var $title = notion['name'];
         
         //1st col : notion's name
-        $th = $('<th></th>').append($title);
+        $th = $('<th></th>').append(notion['name']);
         $tr.append($th);
         
         //2nd col : dropdown
@@ -182,10 +243,13 @@
         // 1) "new" option
         $option = $('<option></option>').append('New notion');
         $select.append($option);
-        // 2) current notions
+        // 2) "ignore" option
+        $option = $('<option></option>').append('Ignore notion');
+        $select.append($option);
+        // 3) current notions
         for(var j = 0; j < current_notions.length; ++j) {
           current_notion = current_notions[j];
-          $option = $('<option></option>').append(current_notion['name']);
+          $option = $('<option></option>').append('Merge with ' + current_notion['name']);
           $select.append($option);
         }
         //TODO : listener onchange (update dropdown items)
@@ -205,17 +269,20 @@
         //a) desc
         $td = $('<td></td>').addClass('import_descs').append('Attributes');
         $tr = $('<tr></tr>').append($td);
-        $tr.append('<td></td>');//TODO : empty, just to fit table size (2 columns)
+        $tr.append('<td></td>');//TODO : improve ? empty td, just to fit table size (2 columns)
         $tbody.append($tr);
         //b) items
         for(var attribute in notion['class_attributes_model']) {
           //1st col : item's name
           $td = $('<td></td>').addClass('import_items_td').append(attribute);
-          $tr = $('<tr></tr>').addClass('import_items_th').append($td);
+          $tr = $('<tr></tr>').addClass('import_items_th').attr('id', attribute).append($td);
           //2nd col : dropdown
           $select = $('<select></select>').addClass('import_dropdown');
           // 1) "new" option
           $option = $('<option></option>').append('New attribute');
+          $select.append($option);
+          // 2) "ignore" option
+          $option = $('<option></option>').append('Ignore attribute');
           $select.append($option);
           // 2) current notions
           for(var attribute in current_notions[0]['class_attributes_model']) {
@@ -242,9 +309,12 @@
         for (var j = 0; j < instances.length; j++) {
           instance = instances[j];
           ci = instance['class_attributes'];
+          console.log("instance[" + j + "] = ");
+          console.log(instance);
+          $tr = $('<tr></tr>').addClass('import_items_th').attr('id', ci['name']);
           $input = this.createCheckbox('', j, null);
           $td = $('<td></td>').addClass('import_items_td').append(ci['name']);
-          $tr = $('<tr></tr>').addClass('import_items_th').append($td);
+          $tr.append($td);
           $td = $('<td></td>').addClass('import_items_td').append($input);
           $tr.append($td);
           $tbody.append($tr);

@@ -250,7 +250,11 @@
       click: function() {
         popupImport.create(notionFactory.getNotions());
         popupImport.getNode().on({
-          importSet: function(e, blabla) {    
+          importSet: function(e, import_notions) {
+            console.log("trigger ok !");
+            console.log("import_notions after : ");
+            console.log(import_notions);
+            //for(int ik = 0; ik < notions_import.length; ik++) {}
             createNotion("Import_Placeholder", null, null);
           }
         });
