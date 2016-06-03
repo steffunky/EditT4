@@ -28,6 +28,8 @@
     Class.prototype.setClassAttributeValue = function(name, value) {
       var model_attribute;
       model_attribute = this.class_attributes_model[name];
+/*      console.log("model_attribute =");
+      console.log(model_attribute);*/
       // Check if the couple name/value is good
       if ((model_attribute != null) && (model_attribute === "" || value === "" || indexOf.call(model_attribute.split('/'), value) >= 0)) {
         this.class_attributes[name] = value;

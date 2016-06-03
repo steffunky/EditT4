@@ -85,6 +85,16 @@
     };
     // Create a new class
     createClass = function(notion_name, notion, class_attributes) {
+
+/*      console.log("================================================");
+      console.log("notion_name =");
+      console.log(notion_name);
+      console.log("notion =");
+      console.log(notion);
+      console.log("class_attributes =");
+      console.log(class_attributes);
+      console.log("================================================");*/
+
       var class_instance;
       class_instance = notion.createClass(class_attributes);
       class_instance.getClassNode().on({
@@ -168,6 +178,10 @@
               results = [];
               for (notion_name in objects) {
                 values = objects[notion_name];
+/*                console.log("values class = ");
+                console.log(values['class']);
+                console.log("values instance = ");
+                console.log(values['instance']);*/
                 results.push(createNotion(notion_name, values['class'], values['instance']));
               }
               return results;
@@ -231,7 +245,10 @@
             return console.log(err);
           }
           clearAll();
-          return saver.restoreData(JSON.parse(data), createNotion, createClass, createInstance);
+          saver.restoreData(JSON.parse(data), createNotion, createClass, createInstance);
+          console.log("notionFactory.getNotions");
+            console.log(notionFactory.getNotions());
+            return;
         });
       }
     });
@@ -251,11 +268,28 @@
         popupImport.create(notionFactory.getNotions());
         popupImport.getNode().on({
           importSet: function(e, import_notions) {
-            console.log("trigger ok !");
+/*            console.log("trigger ok !");
             console.log("import_notions after : ");
-            console.log(import_notions);
-            //for(int ik = 0; ik < notions_import.length; ik++) {}
-            createNotion("Import_Placeholder", null, null);
+            console.log(import_notions);*/
+            for (var key in import_notions) {
+              import_notion = import_notions[key];
+              if(import_notion["mode"] == "New notion") {
+                var new_notion = createNotion(key, import_notion["class_attributes"], import_notion["instance_attributes"]);
+                for(var key2 in import_notion["instances"]) {
+  /*                console.log("------------------------------------------------");
+                  console.log("notion_name =");
+                  console.log(key);
+                  console.log("notion =");
+                  console.log(new_notion);
+                  console.log("class_attributes =");
+                  console.log(import_notion["Instances"][key2]);
+                  console.log("------------------------------------------------");*/
+                  createClass(key, new_notion, import_notion["instances"][key2]);
+                }
+              }
+            }
+            console.log("notionFactory.getNotions");
+            console.log(notionFactory.getNotions());
           }
         });
         return popupImport.show();

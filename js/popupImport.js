@@ -1,21 +1,3 @@
-/*
-Array[3]
-v "Eleve": Object
-  > mode : New
-  v Attributes
-    v Age : Object
-      > mode : merge
-      > target : Age
-    v Note : Object
-      > mode : Ignore
-      > target : null
-  v Instances
-    v 0: Object
-      > ...
-    v 1:..
-
-*/
-
 (function() {
   var extend = function(child, parent) {
     for (var key in parent) {
@@ -55,15 +37,11 @@ v "Eleve": Object
           return function() {
             //RIGHT : import project
             $right.empty();
-            var test = [];
-            /*return _this.displaySave(this.value, notions, $right, test);*/
-            _this.displaySave(this.value, notions, $right, test);
-            console.log("test =");
-            console.log(test);
+            _this.displaySave(this.value, notions, $right, $menu);
           };
         })(this)
       });
-      $open_block.append('<br>');//TODO : TEST
+      $open_block.append('<br>');
       $open_block.append($open_file);
 
       //LEFT : Current Project
@@ -91,10 +69,12 @@ v "Eleve": Object
 
         $thead.append($tr);
         $table.append($thead);
+/*
+        console.log(notion);*/
 
-        //1) attributes
+        //1) class attributes
         //a) desc
-        $td = $('<td></td>').addClass('import_descs').append('Attributes');
+        $td = $('<td></td>').addClass('import_descs').append('Class attributes');
         $tr = $('<tr></tr>').append($td);
         $tbody.append($tr);
         //b) items
@@ -104,7 +84,19 @@ v "Eleve": Object
           $tbody.append($tr);
         }
 
-        //2) instances
+        //1) instance attributes
+        //a) desc
+        $td = $('<td></td>').addClass('import_descs').append('Instance attributes');
+        $tr = $('<tr></tr>').append($td);
+        $tbody.append($tr);
+        //b) items
+        for(var attribute in notion['instance_attributes_model']) {
+          $td = $('<td></td>').addClass('import_items_td').append(attribute);
+          $tr = $('<tr></tr>').addClass('import_items_th').append($td);
+          $tbody.append($tr);
+        }
+
+        //3) instances
         //a) desc
         $td = $('<td></td>').addClass('import_descs').append('Instances');
         $tr = $('<tr></tr>').append($td); 
@@ -134,60 +126,9 @@ v "Eleve": Object
       $title = this.createTitle('Import');
       $header.append($title);
       $header = this.createSideBlocks([$title, $open_block], [6, 6]);
-      //$header.append($open_file);
 
-      //$header.append($open_block);
-
-      // Menu (validate, close...)
-      $create_button = this.createButton('Confirm', true);
-      $create_button.on({
-        click: (function(_this) {
-          return function() {
-            //TODO : complete
-            import_notions = [];
-            ref_body = $body.find('.import_table_import');
-            
-            //pour chaque notion
-            for (var k = 0; k < ref_body.length; k++) {
-              var notion = ref_body[k];
-              var $notion = $(notion);
-
-              import_attributes = [];
-              import_instances = [];
-
-              ref_tr = $notion.find('tr');
-
-              //pour chaque ligne
-              for (l = 0; l < ref_tr.length; l++) {
-                $tr = $(ref_tr[l]);
-                
-                if($tr.find('select').val() != null) {
-                  //Attributes
-                  $select = $tr.find('select');
-                  import_attributes[$tr.attr('id')] = $select.val();
-                } else if ($tr.find('input').prop('checked') != null) {
-                  //Instances
-                  $input = $tr.find('input');
-                  if($input.prop('checked') == true) {
-                    import_instances.push($tr.attr('id'));
-                  }
-                } else {
-                  //titles = no usefull information = do nothing
-                } 
-              }
-
-              var array = [];
-              array["Attributes"] = import_attributes;
-              array["Instances"] = import_instances;
-              import_notions[$notion.attr('id')] = array;
-            }            
-            _this.$popupimport.trigger('importSet', [import_notions]);
-            return _this.close();
-          };
-        })(this)
-      });
       $close_button = this.createCloseButton();
-      $menu = $('<div></div>').append([$create_button, $close_button]);
+      $menu = $('<div></div>').append($close_button);
 
       this.$popupimport = this.createPopup([$header], [$body, $divider], [$menu], 'import');
       this.applyCloseButtonEvents($close_button, this.$popupimport);
@@ -207,12 +148,13 @@ v "Eleve": Object
     };
 
     // Load data from file
-    PopupImport.prototype.displaySave = function(file, current_notions, $display_block, test) {
+    PopupImport.prototype.displaySave = function(file, current_notions, $display_block, $menu) {
 
       var fs = require('fs');
       var data = JSON.parse(fs.readFileSync(file));
-
-      test["tamere"] = data;
+/*
+      console.log("data = ");
+      console.log(data);*/
 
       //notions :
       var notions = data.notions;
@@ -222,6 +164,9 @@ v "Eleve": Object
       // Cell/tooltip display
       var $group = $('<div></div>');
       
+      //TODO : TEST instance details
+      var tab_instance = [];
+
       // Create table
 
       //for each notion
@@ -233,6 +178,7 @@ v "Eleve": Object
         var $th;
         var $thead = $('<thead></thead>');
         var $tbody = $('<tbody></tbody>');
+        var tab_instance2 = [];
         
         //1st col : notion's name
         $th = $('<th></th>').append(notion['name']);
@@ -265,10 +211,10 @@ v "Eleve": Object
 
         // Create lines
 
-        //1) attributes
+        //1) class attributes
         //a) desc
-        $td = $('<td></td>').addClass('import_descs').append('Attributes');
-        $tr = $('<tr></tr>').append($td);
+        $td = $('<td></td>').addClass('import_descs').append('Class attributes');
+        $tr = $('<tr></tr>').attr('id', 'Class attributes').append($td);
         $tr.append('<td></td>');//TODO : improve ? empty td, just to fit table size (2 columns)
         $tbody.append($tr);
         //b) items
@@ -296,7 +242,38 @@ v "Eleve": Object
           $tbody.append($tr);
         }
 
-        //2) instances
+        //2) instance attributes
+        //a) desc
+        $td = $('<td></td>').addClass('import_descs').append('Instance attributes');
+        $tr = $('<tr></tr>').attr('id', 'Instance attributes').append($td);
+        $tr.append('<td></td>');//TODO : improve ? empty td, just to fit table size (2 columns)
+        $tbody.append($tr);
+        //b) items
+        for(var attribute in notion['instance_attributes_model']) {
+          //1st col : item's name
+          $td = $('<td></td>').addClass('import_items_td').append(attribute);
+          $tr = $('<tr></tr>').addClass('import_items_th').attr('id', attribute).append($td);
+          //2nd col : dropdown
+          $select = $('<select></select>').addClass('import_dropdown');
+          // 1) "new" option
+          $option = $('<option></option>').append('New attribute');
+          $select.append($option);
+          // 2) "ignore" option
+          $option = $('<option></option>').append('Ignore attribute');
+          $select.append($option);
+          // 2) current notions
+          for(var attribute in current_notions[0]['instance_attributes_model']) {
+            $option = $('<option></option>').append('Merge with ' + attribute);
+            $select.append($option);
+          }          
+
+          $td = $('<td></td>').addClass('import_items_td').append($select);
+          $tr.append($td);
+
+          $tbody.append($tr);
+        }
+
+        //3) instances
         //a) desc
         $td = $('<td></td>').addClass('import_descs').append('Instances');
         $tr = $('<tr></tr>').append($td); 
@@ -304,25 +281,95 @@ v "Eleve": Object
         $tbody.append($tr);
         //b) items
         instances = notion['class_instances'];
-        var instance;
-        var ci;
         for (var j = 0; j < instances.length; j++) {
-          instance = instances[j];
-          ci = instance['class_attributes'];
-          console.log("instance[" + j + "] = ");
-          console.log(instance);
-          $tr = $('<tr></tr>').addClass('import_items_th').attr('id', ci['name']);
+          var instance = instances[j];
+          var ca = instance['class_attributes'];
+          $tr = $('<tr></tr>').addClass('import_items_th').attr('id', ca['name']);
           $input = this.createCheckbox('', j, null);
-          $td = $('<td></td>').addClass('import_items_td').append(ci['name']);
+          $td = $('<td></td>').addClass('import_items_td').append(ca['name']);
           $tr.append($td);
           $td = $('<td></td>').addClass('import_items_td').append($input);
           $tr.append($td);
           $tbody.append($tr);
+          //TODO : TEST instance details
+          tab_instance2[ca['name']] = ca;
         }
         $table.append($tbody);
         $group.append($table);
+
+        tab_instance[notion['name']] = tab_instance2;
       }
       $body.append($group);
+
+      //TODO : Confirm button
+
+      // Menu (validate, close...)
+      $create_button = this.createButton('Confirm', true);
+      $create_button.on({
+        click: (function(_this) {
+          return function() {
+            //TODO : complete
+            import_notions = [];
+            ref_body = $body.find('.import_table_import');
+            
+            //pour chaque notion
+            for (var k = 0; k < ref_body.length; k++) {
+              var notion = ref_body[k];
+              var $notion = $(notion);
+
+              var import_mode;
+              var import_class_attributes = [];
+              var import_instance_attributes = [];
+              var import_instances = [];
+
+
+              ref_tr = $notion.find('tr');
+
+              //pour chaque ligne
+              for (l = 0; l < ref_tr.length; l++) {
+                var category;
+                $tr = $(ref_tr[l]);
+                
+                if($tr.find('select').val() != null) {
+                  //Attributes
+                  $select = $tr.find('select');
+                  if($tr.attr('id') == null) {
+                    import_mode = $select.val();
+                  } else {
+                    if(category == "Class attributes") {
+                      import_class_attributes[$tr.attr('id')] = "";//$select.val();
+                    } else if (category == "Instance attributes") {
+                      import_instance_attributes[$tr.attr('id')] = "";//$select.val();
+                    }                    
+                  }
+                } else if ($tr.find('input').prop('checked') != null) {
+                  //Instances
+                  $input = $tr.find('input');
+                  if($input.prop('checked') == true) {
+                    //TODO : whole instance not just name
+                    import_instances.push(tab_instance[$notion.attr('id')][$tr.attr('id')]);
+                  }
+                } else {
+                  //goes here for descriptive tr ("attributes :", "instances :")
+                  category = $tr.attr('id');
+                }
+              }
+              var array = [];
+              array["mode"] = import_mode;
+              array["class_attributes"] = import_class_attributes;
+              array["instance_attributes"] = import_instance_attributes;
+              array["instances"] = import_instances;
+              import_notions[$notion.attr('id')] = array;
+            }
+            console.log("import_notions =");
+            console.log(import_notions);
+            _this.$popupimport.trigger('importSet', [import_notions]);
+            return _this.close();
+          };
+        })(this)
+      });
+      $menu.prepend($create_button);
+
       return $display_block.append($body);
     };
 
