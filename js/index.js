@@ -276,6 +276,7 @@
               if(import_notion["mode"] == "New notion") {
                 var new_notion = createNotion(key, import_notion["class_attributes"], import_notion["instance_attributes"]);
                 for(var key2 in import_notion["instances"]) {
+                  createClass(key, new_notion, import_notion["instances"][key2]);
   /*                console.log("------------------------------------------------");
                   console.log("notion_name =");
                   console.log(key);
@@ -284,7 +285,6 @@
                   console.log("class_attributes =");
                   console.log(import_notion["Instances"][key2]);
                   console.log("------------------------------------------------");*/
-                  createClass(key, new_notion, import_notion["instances"][key2]);
                 }
               }
             }

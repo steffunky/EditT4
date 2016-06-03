@@ -2,9 +2,9 @@
   window.NotionFactory = (function() {
     NotionFactory.prototype.populateNode = function() {
       var $header, $img_add, $img_load, $node, $span_add, $span_load;
-      $node = $('<div></div>').addClass('notion panel panel-default').attr('id', 'add_notion');
+      $node = $('<div></div>').addClass('notion panel panel-default menu_notion').attr('id', 'add_notion');
       $header = $('<div></div>').addClass('panel-heading');
-      $span_add = $('<span></span>').text('Add notions / ');
+      $span_add = $('<span></span>').text('Add notions');
       $img_add = $('<span></span>').addClass('add_notion span_action glyphicon glyphicon-plus');
       $img_add.on({
         click: (function(_this) {
@@ -13,16 +13,7 @@
           };
         })(this)
       });
-      $span_load = $('<span></span>').text('Load notion');
-      $img_load = $('<span></span>').addClass('add_notion span_action glyphicon glyphicon-floppy-open');
-      $img_load.on({
-        click: (function(_this) {
-          return function() {
-            return _this.$notionFactory.trigger('loadNotion');
-          };
-        })(this)
-      });
-      $header.append([$img_add, $span_add, $img_load, $span_load]);
+      $header.append([$img_add, $span_add]);
       $node.append($header);
       return this.$notionFactory.append($node);
     };

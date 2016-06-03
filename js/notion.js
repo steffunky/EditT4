@@ -18,15 +18,6 @@
           };
         })(this)
       });
-      $img_load = $('<span></span>').addClass('icon span_action glyphicon glyphicon-floppy-open');
-      $img_load.on({
-        click: (function(_this) {
-          return function() {
-            return $node.trigger('loadClass');
-          };
-        })(this)
-      });
-      $actions.prepend($img_add).append($img_load);
       $header.append($actions);
       $panel.append([$header, $body]);
       $node.append($panel);

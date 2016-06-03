@@ -11,6 +11,16 @@ nav {
     padding-right: 20px;
 }
 
+.menu_notion {
+    margin-right: 15px;
+    margin-left: 15px;
+    width: 495px;
+}
+
+.notion_root {
+    padding-right: 3px !important; 
+}
+
 .draggable {
     cursor: move;
 }
