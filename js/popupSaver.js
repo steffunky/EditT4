@@ -168,11 +168,11 @@
           var fs = require('fs');
           var os = require('os');
           var path = require('path');
-          var dir = os.homedir()+path.sep+"Editor";
+          var dir = os.homedir()+path.sep+"EditT4";
           if (!fs.existsSync(dir)){
               fs.mkdirSync(dir);
           }
-          var default_name = $input_save.val()+'.jproj';
+          var default_name = $input_save.val()+'.editT4';
           this.nwworkingdir = dir+path.sep+default_name;
         },
         change: (function(_this) {

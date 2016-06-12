@@ -69,8 +69,6 @@
 
         $thead.append($tr);
         $table.append($thead);
-/*
-        console.log(notion);*/
 
         //1) class attributes
         //a) desc
@@ -152,11 +150,6 @@
 
       var fs = require('fs');
       var data = JSON.parse(fs.readFileSync(file));
-/*
-      console.log("data = ");
-      console.log(data);*/
-
-      //notions :
       var notions = data.notions;
 
       var $body = this.createBlock('Import from : ' + file.replace(/^.*[\\\/]/, ''));
@@ -185,31 +178,24 @@
         $tr.append($th);
         
         //2nd col : dropdown
-        $select = $('<select></select>').addClass('import_dropdown');
-        // 1) "new" option
-        $option = $('<option></option>').append('New notion');
-        $select.append($option);
-        // 2) "ignore" option
-        $option = $('<option></option>').append('Ignore notion');
-        $select.append($option);
-        // 3) current notions
+        $select_notion = $('<select></select>').addClass('import_dropdown');
+        // basic options
+        $select_notion.append($('<option></option>').append('New notion'));
+        $select_notion.append($('<option></option>').append('Ignore notion'));
+        // merge options
         for(var j = 0; j < current_notions.length; ++j) {
-          current_notion = current_notions[j];
-          $option = $('<option></option>').append('Merge with ' + current_notion['name']);
-          $select.append($option);
+          $select_notion.append($('<option></option>').append('Merge with ' + current_notions[j]['name']));
         }
-        //TODO : listener onchange (update dropdown items)
-        $select.change(function() {
-          console.log('select='+i);
-        });
 
-        $th = $('<th></th>').addClass('import_dropdown_align').append($select);
+        $th = $('<th></th>').addClass('import_dropdown_align').append($select_notion);
         $tr.append($th);
 
         $thead.append($tr);
         $table.append($thead);
 
         // Create lines
+
+        var select_array = [];
 
         //1) class attributes
         //a) desc
@@ -223,22 +209,13 @@
           $td = $('<td></td>').addClass('import_items_td').append(attribute);
           $tr = $('<tr></tr>').addClass('import_items_th').attr('id', attribute).append($td);
           //2nd col : dropdown
-          $select = $('<select></select>').addClass('import_dropdown');
-          // 1) "new" option
-          $option = $('<option></option>').append('New attribute');
-          $select.append($option);
-          // 2) "ignore" option
-          $option = $('<option></option>').append('Ignore attribute');
-          $select.append($option);
-          // 2) current notions
-          for(var attribute in current_notions[0]['class_attributes_model']) {
-            $option = $('<option></option>').append('Merge with ' + attribute);
-            $select.append($option);
-          }          
-
-          $td = $('<td></td>').addClass('import_items_td').append($select);
+          $select_att = $('<select></select>').addClass('import_dropdown');
+          $select_att.append($('<option></option>').append("New attribute"));
+          $select_att.append($('<option></option>').append("Ignore attribute"));
+          select_array.push($select_att);
+          
+          $td = $('<td></td>').addClass('import_items_td').append($select_att);
           $tr.append($td);          
-
           $tbody.append($tr);
         }
 
@@ -254,24 +231,57 @@
           $td = $('<td></td>').addClass('import_items_td').append(attribute);
           $tr = $('<tr></tr>').addClass('import_items_th').attr('id', attribute).append($td);
           //2nd col : dropdown
-          $select = $('<select></select>').addClass('import_dropdown');
-          // 1) "new" option
-          $option = $('<option></option>').append('New attribute');
-          $select.append($option);
-          // 2) "ignore" option
-          $option = $('<option></option>').append('Ignore attribute');
-          $select.append($option);
-          // 2) current notions
-          for(var attribute in current_notions[0]['instance_attributes_model']) {
-            $option = $('<option></option>').append('Merge with ' + attribute);
-            $select.append($option);
-          }          
+          //TODO : faire la différence class / instance attributes pour les options du merge.
+          $select_att = $('<select></select>').addClass('import_dropdown');
+          $select_att.append($('<option></option>').append("New attribute"));
+          $select_att.append($('<option></option>').append("Ignore attribute"));
+          select_array.push($select_att);
 
-          $td = $('<td></td>').addClass('import_items_td').append($select);
+          $td = $('<td></td>').addClass('import_items_td').append($select_att);
           $tr.append($td);
-
           $tbody.append($tr);
         }
+
+        $select_notion.on({
+          change: (function(array) {
+            return function() {
+              for(var key in array) {
+                array[key].options = function(mode) {
+                  //clear previous values
+                    array[key].html([]);
+                  if (mode == "New notion") {
+                    //basic options
+                    array[key].append($('<option></option>').append("New attribute"));
+                    array[key].append($('<option></option>').append("Ignore attribute"));
+                  }
+                  else if (mode == "Ignore notion") {
+                    array[key].append($('<option></option>').append("Ignore attribute"));
+                  }
+                  else if (mode.substring(0, 5) == "Merge") {
+                    //basic options
+                    array[key].append($('<option></option>').append("New attribute"));
+                    array[key].append($('<option></option>').append("Ignore attribute"));
+                    //merge options
+                    var substr;
+                    substr = mode.substring(mode.indexOf(" ") + 1, mode.length);//removes "Merge "
+                    substr = substr.substring(substr.indexOf(" ") + 1, substr.length);//removes "with "
+                    // - find the right notion
+                    for(var j = 0; j < current_notions.length; ++j) {
+                      var current_notion = current_notions[j];
+                      if(current_notion['name'] == substr) {
+                        for(var attribute in current_notion['class_attributes_model']) {
+                          $option = $('<option></option>').append('Merge with ' + attribute);
+                          array[key].append($option);
+                        }
+                        break;
+                      }
+                    }
+                  }
+                }(this.value)
+              }
+            };
+          })(select_array)
+        });
 
         //3) instances
         //a) desc

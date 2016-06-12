@@ -18,6 +18,7 @@
           };
         })(this)
       });
+      $actions.prepend($img_add)
       $header.append($actions);
       $panel.append([$header, $body]);
       $node.append($panel);

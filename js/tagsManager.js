@@ -15,7 +15,7 @@
       this.tags_conf = {};
       // Default colors
       return this.colors = {
-        'default': '//C2C2C2',
+        'default': '#C2C2C2',
         white: 'rgb(255, 255, 255)',
         black: 'rgb(0, 0, 0)',
         red: 'rgb(255, 0, 0)',
