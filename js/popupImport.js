@@ -127,6 +127,8 @@
 
       $close_button = this.createCloseButton();
       $menu = $('<div></div>').append($close_button);
+      $create_button = this.createButton('Confirm', true).attr('id', 'confirm_button');
+      $menu.prepend($create_button);
 
       this.$popupimport = this.createPopup([$header], [$body, $divider], [$menu], 'import');
       this.applyCloseButtonEvents($close_button, this.$popupimport);
@@ -164,18 +166,17 @@
 
       //for each notion
       for (var i = 0, len = notions.length; i < len; i++) {
-        notion = notions[i];
+        var notion = notions[i];
 
         var $table = $('<table></table>').attr('id', notion['name']).addClass('table table-condensed import_table_import');
-        var $tr = $('<tr></tr>');
-        var $th;
         var $thead = $('<thead></thead>');
         var $tbody = $('<tbody></tbody>');
+
         var tab_instance2 = [];
         
         //1st col : notion's name
-        $th = $('<th></th>').append(notion['name']);
-        $tr.append($th);
+        var $th = $('<th></th>').append(notion['name']);
+        var $tr = $('<tr></tr>').attr('id', notion['name']).append($th);
         
         //2nd col : dropdown
         $select_notion = $('<select></select>').addClass('import_dropdown');
@@ -242,6 +243,10 @@
           $tbody.append($tr);
         }
 
+        //Dynamic changes the dropdowns values.
+        //TODO : move it to a function ?
+        //TODO : empecher de merger 2 fois sur le meme attribut
+        //TODO : empecher d'ignorer name ? (attribut obligatoire ?)
         $select_notion.on({
           change: (function(array) {
             return function() {
@@ -262,16 +267,12 @@
                     array[key].append($('<option></option>').append("New attribute"));
                     array[key].append($('<option></option>').append("Ignore attribute"));
                     //merge options
-                    var substr;
-                    substr = mode.substring(mode.indexOf(" ") + 1, mode.length);//removes "Merge "
-                    substr = substr.substring(substr.indexOf(" ") + 1, substr.length);//removes "with "
-                    // - find the right notion
+                    var substr = mode.replace("Merge with ", "");
                     for(var j = 0; j < current_notions.length; ++j) {
                       var current_notion = current_notions[j];
                       if(current_notion['name'] == substr) {
                         for(var attribute in current_notion['class_attributes_model']) {
-                          $option = $('<option></option>').append('Merge with ' + attribute);
-                          array[key].append($option);
+                          array[key].append($('<option></option>').append('Merge with ' + attribute));
                         }
                         break;
                       }
@@ -313,8 +314,9 @@
 
       //TODO : Confirm button
 
-      // Menu (validate, close...)
+      // Menu (validate, close...) //TODO : move it to a function ?
       $create_button = this.createButton('Confirm', true);
+      $create_button.attr('id', 'confirm_button');
       $create_button.on({
         click: (function(_this) {
           return function() {
@@ -332,28 +334,31 @@
               var import_instance_attributes = [];
               var import_instances = [];
 
-
               ref_tr = $notion.find('tr');
 
-              //pour chaque ligne
-              for (l = 0; l < ref_tr.length; l++) {
+              //Ignore notion if asked , otherwise set import_mode
+              import_mode = $(ref_tr[0]).find('select').val();
+              if(import_mode == "Ignore notion") {
+                continue;
+              }
+
+              //TODO : perte des value1/value2/etc.. à régler
+
+              //pour chaque attribut
+              for (l = 1; l < ref_tr.length; l++) {
                 var category;
                 $tr = $(ref_tr[l]);
-                
+                //1) Dropdowns = Attributs
                 if($tr.find('select').val() != null) {
-                  //Attributes
                   $select = $tr.find('select');
-                  if($tr.attr('id') == null) {
-                    import_mode = $select.val();
-                  } else {
-                    if(category == "Class attributes") {
-                      import_class_attributes[$tr.attr('id')] = "";//$select.val();
-                    } else if (category == "Instance attributes") {
-                      import_instance_attributes[$tr.attr('id')] = "";//$select.val();
-                    }                    
+                  if(category == "Class attributes") {
+                    import_class_attributes[$tr.attr('id')] = $select.val();
+                  } else if (category == "Instance attributes") {
+                    import_instance_attributes[$tr.attr('id')] = $select.val();
                   }
-                } else if ($tr.find('input').prop('checked') != null) {
-                  //Instances
+                } 
+                //2) Checkbox = Instances
+                else if ($tr.find('input').prop('checked') != null) {
                   $input = $tr.find('input');
                   if($input.prop('checked') == true) {
                     //TODO : whole instance not just name
@@ -366,9 +371,39 @@
               }
               var array = [];
               array["mode"] = import_mode;
-              array["class_attributes"] = import_class_attributes;
-              array["instance_attributes"] = import_instance_attributes;
+              //retrieve model from original imported notion (TODO : better way to do this)
+              for (var i = 0, len = notions.length; i < len; i++) {
+                var notion = notions[i];
+                if (notion["name"] == $notion.attr('id')) {
+                  //take out attributes that user wants to ignore
+                  array["class_attributes_model"] = [];
+                  for(var key in notion["class_attributes_model"]) {
+                    if(import_class_attributes[key] != "Ignore attribute") {
+                      array["class_attributes_model"][key] = notion['class_attributes_model'][key];
+                    } else {
+                      //update all instances (remove attribute for each)
+                      for(var instance in import_instances) {
+                        delete import_instances[instance][key];
+                      }
+                    }
+                  }
+                  array["instance_attributes_model"] = [];
+                  for(var key in notion["instance_attributes_model"]) {
+                    if(import_instance_attributes[key] != "Ignore attribute") {
+                      array["instance_attributes_model"][key] = notion['instance_attributes_model'][key];
+                    } else {
+                      //update all instances (remove attribute for each)
+                      for(var instance in import_instances) {
+                        delete import_instances[instance][key];
+                      }
+                    }
+                  }
+                }
+              }
+              array["class_attributes_modes"] = import_class_attributes;
+              array["instance_attributes_modes"] = import_instance_attributes;              
               array["instances"] = import_instances;
+
               import_notions[$notion.attr('id')] = array;
             }
             console.log("import_notions =");
@@ -378,6 +413,9 @@
           };
         })(this)
       });
+      //TODO : delete multiple confirm (better way do this ?)
+      var test = document.getElementById("confirm_button");
+      test.parentNode.removeChild(test);
       $menu.prepend($create_button);
 
       return $display_block.append($body);

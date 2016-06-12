@@ -254,10 +254,74 @@
           importSet: function(e, import_notions) {
             for (var key in import_notions) {
               import_notion = import_notions[key];
+
+              //cas 1 : New notion
               if(import_notion["mode"] == "New notion") {
-                var new_notion = createNotion(key, import_notion["class_attributes"], import_notion["instance_attributes"]);
+                var new_notion = createNotion(key, import_notion["class_attributes_model"], import_notion["instance_attributes_model"]);
                 for(var key2 in import_notion["instances"]) {
                   createClass(key, new_notion, import_notion["instances"][key2]);
+                }
+              }
+              //cas 2 : Merge notion
+              else if (import_notion["mode"].substring(0, 5) == "Merge") {
+                var substr_notion = import_notion["mode"].replace("Merge with ", "");
+                //targeted notion :
+                var notions = notionFactory.getNotions();
+                var notion_targeted;
+                for(var i = 0; i < notions.length; ++i) {
+                  if(notions[i]["name"] == substr_notion) {
+                    notion_targeted = notions[i];
+                  }
+                }
+                //for each class attribute
+                for(var key2 in import_notion["class_attributes_modes"]) {
+                  //create new attribute
+                  if(import_notion["class_attributes_modes"][key2] == "New attribute") {
+                    var att_values = "" //TODO : complete values (value1/value2/etc..)
+                    notion_targeted.addClassAttributeModel(key2, "");
+                  }
+                  //merge with existing attribute
+                  //
+                  //méthode : ajouter attribut à chaque instance en copiant la valeur de l'ancien
+                  //attribut dedans, puis supprimer ce dernier (/!\ exception pour les doublons)
+                  //TODO : better way to do this ?
+                  else if (import_notion["class_attributes_modes"][key2].substring(0, 5) == "Merge") {
+                    var substr_att = import_notion["class_attributes_modes"][key2].replace("Merge with ", "");
+                    //update attribute for each instance //TODO : better way to do this ?
+                    for(var key3 in import_notion["instances"]) {
+                      if(substr_att != key2) {
+                        import_notion["instances"][key3][substr_att] = import_notion["instances"][key3][key2];
+                        delete import_notion["instances"][key3][key2];
+                      }
+                    }
+                  }
+                }
+                //for each instance attribute
+                for(var key2 in import_notion["instance_attributes_modes"]) {
+                  //create new attribute
+                  if(import_notion["instance_attributes_modes"][key2] == "New attribute") {
+                    var att_values = "" //TODO : complete values (value1/value2/etc..)
+                    notion_targeted.addInstanceAttributeModel(key2, "");
+                  }
+                  //merge with existing attribute
+                  //
+                  //méthode : ajouter attribut à chaque instance en copiant la valeur de l'ancien
+                  //attribut dedans, puis supprimer ce dernier (/!\ exception pour les doublons)
+                  //TODO : better way to do this ?
+                  else if (import_notion["instance_attributes_modes"][key2].substring(0, 5) == "Merge") {
+                    var substr_att = import_notion["instance_attributes_modes"][key2].replace("Merge with ", "");
+                    //update attribute for each instance //TODO : better way to do this ?
+                    for(var key3 in import_notion["instances"]) {
+                      if(substr_att != key2) {
+                        import_notion["instances"][key3][substr_att] = import_notion["instances"][key3][key2];
+                        delete import_notion["instances"][key3][key2];
+                      }
+                    }
+                  }
+                }
+                //add new classes
+                for(var key2 in import_notion["instances"]) {
+                  createClass(notion_targeted["key"], notion_targeted, import_notion["instances"][key2]);
                 }
               }
             }
