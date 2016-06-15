@@ -108,7 +108,6 @@
           $tr = $('<tr></tr>').addClass('import_items_th').append($td); 
           $tbody.append($tr);
         }
-
         $table.append($tbody);
         $group.append($table);
       }
@@ -134,8 +133,7 @@
       this.applyCloseButtonEvents($close_button, this.$popupimport);
 
       this.$popupimport.css({
-        'min-width': '800px'/*,
-        'max-width': '1200px'*/
+        'min-width': '800px'
       });
 
       return this.$popupimport.on({

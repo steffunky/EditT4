@@ -153,7 +153,10 @@
           return instanceEvents(notion_name, instance, false);
         }
       });
-      if ((open != null) && open === true) {
+      //don't show popup :
+      // - while opening a projet
+      // - if there is no utility to it (no instance attributes & no tags to apply)
+      if ((open != null) && open === true && !($.isEmptyObject(instance.getInstanceAttributesModel()))) {
         return setInstanceAttribute();
       }
     };
