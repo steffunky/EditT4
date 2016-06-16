@@ -155,7 +155,7 @@
       });
       //don't show popup :
       // - while opening a projet
-      // - if there is no utility to it (no instance attributes & no tags to apply)
+      // - if there is no utility to it (no instance attributes)
       if ((open != null) && open === true && !($.isEmptyObject(instance.getInstanceAttributesModel()))) {
         return setInstanceAttribute();
       }

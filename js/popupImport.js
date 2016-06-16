@@ -208,7 +208,7 @@
           $td = $('<td></td>').addClass('import_items_td').append(attribute);
           $tr = $('<tr></tr>').addClass('import_items_th').attr('id', attribute).append($td);
           //2nd col : dropdown
-          $select_att = $('<select></select>').addClass('import_dropdown');
+          $select_att = $('<select></select>').attr('id', 'class').addClass('import_dropdown');
           $select_att.append($('<option></option>').append("New attribute"));
           $select_att.append($('<option></option>').append("Ignore attribute"));
           select_array.push($select_att);
@@ -231,7 +231,7 @@
           $tr = $('<tr></tr>').addClass('import_items_th').attr('id', attribute).append($td);
           //2nd col : dropdown
           //TODO : faire la différence class / instance attributes pour les options du merge.
-          $select_att = $('<select></select>').addClass('import_dropdown');
+          $select_att = $('<select></select>').attr('id', 'instance').addClass('import_dropdown');
           $select_att.append($('<option></option>').append("New attribute"));
           $select_att.append($('<option></option>').append("Ignore attribute"));
           select_array.push($select_att);
@@ -241,7 +241,7 @@
           $tbody.append($tr);
         }
 
-        //Dynamic changes the dropdowns values.
+        //Dynamic changes the dropdowns values for attributes.
         //TODO : move it to a function ?
         //TODO : empecher de merger 2 fois sur le meme attribut
         //TODO : empecher d'ignorer name ? (attribut obligatoire ?)
@@ -269,7 +269,15 @@
                     for(var j = 0; j < current_notions.length; ++j) {
                       var current_notion = current_notions[j];
                       if(current_notion['name'] == substr) {
-                        for(var attribute in current_notion['class_attributes_model']) {
+                        var attributes_model;
+                        //class attributes can be only be merged with class attributes
+                        //same for instance attributes
+                        if (array[key].attr('id') == 'class') {
+                          attributes_model = current_notion['class_attributes_model'];
+                        } else if (array[key].attr('id') == 'instance') {
+                          attributes_model = current_notion['instance_attributes_model'];
+                        }
+                        for(var attribute in attributes_model) {
                           array[key].append($('<option></option>').append('Merge with ' + attribute));
                         }
                         break;
