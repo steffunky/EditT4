@@ -6,7 +6,7 @@ Fonctionnalités ajoutées :
 - Nouveau module d'import de données.
 - Corrections diverses
 
-Cette version a été batie directement sur le code javascript générée par le code coffeescript de EditT3.
+Cette version a été batîe directement sur le code javascript générée par le code coffeescript de EditT3.
 
 ## Usage
 
@@ -21,10 +21,12 @@ Procédure à suivre pour lancer une application sous NW.js : https://github.com
 ## Remerciements
 
 Merci à tous les auteurs des projets (sous [license MIT](http://opensource.org/licenses/MIT)) que nous avons utilisé:
+ * [NW.js](http://nwjs.io/)
  * [BootStrap](http://getbootstrap.com/)
  * [jQuery](http://jquery.com/)
  * [jQuery-contextMenu](http://medialize.github.io/jQuery-contextMenu/)
  * [jQuery-popup-overlay](http://dev.vast.com/jquery-popup-overlay/)
+
 
 Projets utilisés dans le développement de la précédente version :
  * [CoffeeScript](http://coffeescript.org/)
