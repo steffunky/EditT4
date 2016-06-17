@@ -147,6 +147,10 @@
       restore_notions = restore.notions;
       create_instances = [];
 
+      // Display the name & description of the project
+      $('#p_name').text(restore['name']);
+      $('#p_desc').text(restore['description'])
+
       // Set the tags and tag colors to the manager
       // Before all ! (for example new instances will use this)
       if ((restore.tags != null)) {

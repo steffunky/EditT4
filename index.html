@@ -15,45 +15,53 @@
   </head>
   
   <body>
-  
-  <!-- Menu -->
-  <nav class="col-md-12" style="margin-left: 15px">
-    <div class="btn-group">
-      <div class="btn-group">
-        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-          <span class="glyphicon glyphicon-file" aria-hidden="true"></span> File <span class="caret"></span>
-        </button>
-        <ul class="dropdown-menu" role="menu">
-          <li><a id='alias_open_button' href="#" >Open</a></li>
-          <li role="separator" class="divider"></li>
-          <li><a id='new_button' href="#" >New</a></li>
-        </ul>
+
+  <div class="container ctm-container">
+    <div class="row">
+      <div class="col-md-6">
+        <nav style="margin-left: 15px">
+          <div class="btn-group">
+            <div class="btn-group">
+              <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                <span class="glyphicon glyphicon-file" aria-hidden="true"></span> File <span class="caret"></span>
+              </button>
+              <ul class="dropdown-menu" role="menu">
+                <li><a id='alias_open_button' href="#" >Open</a></li>
+                <li role="separator" class="divider"></li>
+                <li><a id='new_button' href="#" >New</a></li>
+              </ul>
+            </div>
+            <button id='save_button' type="button" class="btn btn-default" aria-label="Left Align">
+              <span class="glyphicon glyphicon-floppy-save" aria-hidden="true"></span> Save As
+            </button>
+            <button id='import_button' type="button" class="btn btn-default" aria-label="Left Align">
+              <span class="glyphicon glyphicon-import" aria-hidden="true"></span> Import
+            </button>
+            <button id='display_button' type="button" class="btn btn-default" aria-label="Left Align">
+              <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span> Display
+            </button>
+            <button id='tags_button' type="button" class="btn btn-default" aria-label="Left Align">
+              <span class="glyphicon glyphicon-tag" aria-hidden="true"></span> Tags
+            </button>
+            <button id='filter_button' type="button" class="btn btn-default" aria-label="Left Align">
+              <span class="glyphicon glyphicon glyphicon-cog" aria-hidden="true"></span> Filter
+            </button>
+          </div>
+        </nav>          
+        <div id="notions" style="padding-right: 0px;"></div>
       </div>
-      <button id='save_button' type="button" class="btn btn-default" aria-label="Left Align">
-        <span class="glyphicon glyphicon-floppy-save" aria-hidden="true"></span> Save As
-      </button>
-      <button id='import_button' type="button" class="btn btn-default" aria-label="Left Align">
-        <span class="glyphicon glyphicon-import" aria-hidden="true"></span> Import
-      </button>
-      <button id='display_button' type="button" class="btn btn-default" aria-label="Left Align">
-        <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span> Display
-      </button>
-      <button id='tags_button' type="button" class="btn btn-default" aria-label="Left Align">
-        <span class="glyphicon glyphicon-tag" aria-hidden="true"></span> Tags
-      </button>
-      <button id='filter_button' type="button" class="btn btn-default" aria-label="Left Align">
-        <span class="glyphicon glyphicon glyphicon-cog" aria-hidden="true"></span> Filter
-      </button>
+      <div class="col-md-6">
+        <p id='p_name' style='font-weight: bold;'></p>
+        <p id='p_desc'></p>
+        <div id="mytable"></div>
+      </div>
     </div>
-  </nav>
+  </div>
 
   <!-- Open File (Hidden : triggered by alias_open_button in the topbar) -->
   <div hidden>
       <input id='open_button' type="file" class="filestyle" accept=".editT4"/>
   </div>
-    
-  <div id="notions" class="col-md-4" style="padding-right: 0px;"></div>
-  <div id="mytable" class="col-md-8"></div>
 
   <!-- Lib -->
   <script src="lib/jQuery/jquery-1.11.1.js"></script>

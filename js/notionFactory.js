@@ -4,7 +4,7 @@
     NotionFactory.prototype.populateNode = function() {
       var $header, $img_add, $img_load, $node, $span_add, $span_load;
       $node = $('<div></div>').addClass('notion panel panel-default menu_notion').attr('id', 'add_notion');
-      $header = $('<div></div>').addClass('panel-heading');
+      $header = $('<div></div>').addClass('panel-heading ctm-panel-heading');
       $span_add = $('<span></span>').text('Add notions');
       $img_add = $('<span></span>').addClass('add_notion span_action glyphicon glyphicon-plus');
       $img_add.on({

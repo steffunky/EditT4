@@ -7,6 +7,15 @@ nav {
     margin-top: 10px
 }
 
+.ctm-container {
+    margin-left: 0px !important;
+    margin-right: 0px !important;
+}
+
+.ctm-panel-heading {
+    border-color: white !important;
+}
+
 #notions {
     padding-right: 20px;
 }
@@ -17,8 +26,9 @@ nav {
     width: 495px;
 }
 
-.notion_root {
-    padding-right: 3px !important; 
+.ctm-notion {
+    padding-right: 3px !important;
+    width: 255px !important;
 }
 
 .draggable {

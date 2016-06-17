@@ -5,7 +5,7 @@
     // --------------- Private methods ---------------
     Notion.prototype.createNotionNode = function(name) {
       var $actions, $body, $header, $img_add, $img_load, $node, $panel;
-      $node = $('<div></div>').addClass('col-sm-6 notion_root');
+      $node = $('<div></div>').addClass('col-sm-6 ctm-notion');
       $panel = $('<div></div>').addClass('notion panel panel-default').attr('id', name);
       $header = $('<div></div>').addClass('panel-heading').text(name);
       $body = $('<ul></ul>').addClass('list-group');

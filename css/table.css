@@ -1,9 +1,5 @@
 /* Template from http://johnsardine.com/freebies/dl-html-css/simple-little-tab/ */
 
-#mytable {
-	padding-left: 45px;
-}
-
 #mytable table a:link {
 	color: #666;
 	font-weight: bold;
