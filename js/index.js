@@ -61,7 +61,7 @@
       });
     };
     // Create a new notion
-    //TODO : update attributes list after an import ?
+    // TODO : update attributes list after an import
     createNotion = function(notion_name, class_values, instance_values) {
       var $notion_node, notion;
       // We create the notion from the notionFactory
@@ -199,7 +199,7 @@
         var fs = require('fs');
         var os = require('os');
         var path = require('path');
-        var dir = os.homedir()+path.sep+"EditT4";//TODO : ne marche pas avec nw.js post 13.0
+        var dir = os.homedir()+path.sep+"EditT4";//doesn't work with nw.js post v0.13.0
         if (!fs.existsSync(dir)){
             fs.mkdirSync(dir);
         }
@@ -260,13 +260,15 @@
                 for(var key2 in import_notion["class_attributes_modes"]) {
                   //create new attribute
                   if(import_notion["class_attributes_modes"][key2] == "New attribute") {
-                    var att_values = "" //TODO : complete values (value1/value2/etc..)
                     notion_targeted.addClassAttributeModel(key2, import_notion["class_attributes_model"][key2]);
                   }
                   //merge with existing attribute
                   //
-                  //méthode : ajouter attribut à chaque instance en copiant la valeur de l'ancien
-                  //attribut dedans, puis supprimer ce dernier (/!\ exception pour les doublons)
+                  //method used : 
+                  // - add the new attribute to each instance
+                  // - copy the value of the former attribute into the new one
+                  // - delete the former attribute
+                  // - /!\ (handled) exception for attributes that have the same name
                   else if (import_notion["class_attributes_modes"][key2].substring(0, 5) == "Merge") {
                     var substr_att = import_notion["class_attributes_modes"][key2].replace("Merge with ", "");
                     //update attribute for each instance
@@ -284,10 +286,9 @@
                   if(import_notion["instance_attributes_modes"][key2] == "New attribute") {
                     notion_targeted.addInstanceAttributeModel(key2, import_notion["instance_attributes_model"][key2]);
                   }
-                  //merge with existing attribute
+                  //method used :
                   //
-                  //méthode : ajouter attribut à chaque instance en copiant la valeur de l'ancien
-                  //attribut dedans, puis supprimer ce dernier (/!\ exception pour les doublons)
+                  //(same strategy)
                   else if (import_notion["instance_attributes_modes"][key2].substring(0, 5) == "Merge") {
                     var substr_att = import_notion["instance_attributes_modes"][key2].replace("Merge with ", "");
                     for(var key3 in import_notion["classes"]) {

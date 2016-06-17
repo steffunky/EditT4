@@ -21,38 +21,36 @@
       this.$popupimport = null;
     }
 
+    // Create the popup
     PopupImport.prototype.create = function(notions) {
       var $close_button,          $create_notions_block,  $create_notions_button,
           $open_block,            $open_button,           $header,
           $body,                  $left,                  $right,
           $divider;
 
-      $open_block = this.createBlock();
-
       $right = $('<div></div>');
       
-      // file selector
+      //file selector
       $open_file = this.createInputFile();
       $open_file.on({
         change: (function(_this) {
           return function() {
-            //RIGHT : import project
+            //right part : project to import
             $right.empty();
             _this.displaySave(this.value, notions, $right, $menu);
           };
         })(this)
       });
+      $open_block = this.createBlock();
       $open_block.append('<br>');
       $open_block.append($open_file);
 
-      //LEFT : Current Project
+      //left part : current project
 
       $left = this.createBlock('Current project');
-      // Cell/tooltip display
-      var $group = $('<div></div>');
-      
-      // Create table
 
+      // Create table
+      var $group = $('<div></div>');
       //for each notion
       for (var i = 0, len = notions.length; i < len; i++) {
         notion = notions[i];
@@ -82,7 +80,6 @@
           $tr = $('<tr></tr>').addClass('import_items_th').append($td);
           $tbody.append($tr);
         }
-
         //1) instance attributes
         //a) desc
         $td = $('<td></td>').addClass('import_descs').append('Instance attributes');
@@ -94,7 +91,6 @@
           $tr = $('<tr></tr>').addClass('import_items_th').append($td);
           $tbody.append($tr);
         }
-
         //3) instances
         //a) desc
         $td = $('<td></td>').addClass('import_descs').append('Instances');
@@ -119,7 +115,7 @@
 
       $divider = $('<div></div>').addClass('import_divider');
 
-      //HEAD : title + file selector
+      //head : title + file selector
       $header = $('<div></div>');
       $title = this.createTitle('Import');
       $header.append($title);
@@ -147,21 +143,16 @@
     };
 
     // Load data from file
+    // TODO : should be splited in several sub-functions
     PopupImport.prototype.displaySave = function(file, current_notions, $display_block, $menu) {
-
       var fs = require('fs');
       var data = JSON.parse(fs.readFileSync(file));
       var notions = data.notions;
 
-      var $body = this.createBlock('Import from : ' + file.replace(/^.*[\\\/]/, ''));
-
-      // Cell/tooltip display
       var $group = $('<div></div>');
-      
-      var tab_instances = [];
 
       // Create table
-
+      var tab_instances = [];
       //for each notion
       for (var i = 0, len = notions.length; i < len; i++) {
         var notion = notions[i];
@@ -173,7 +164,6 @@
         //1st col : notion's name
         var $th = $('<th></th>').append(notion['name']);
         var $tr = $('<tr></tr>').attr('id', notion['name']).append($th);
-        
         //2nd col : dropdown
         $select_notion = $('<select></select>').addClass('import_dropdown');
         // basic options
@@ -239,9 +229,9 @@
         }
 
         //Dynamically change the dropdowns values for attributes.
-        //TODO : move it to a function ?
-        //TODO : empecher de merger 2 fois sur le meme attribut
-        //TODO : empecher d'ignorer name ? (attribut obligatoire ?)
+        //TODO : move this to a function ?
+        //TODO : prevent multiple merge on a same attribute.
+        //TODO : don't allow the user to ignore the mandatory attribute "name"
         $select_notion.on({
           change: (function(array) {
             return function() {
@@ -313,6 +303,7 @@
 
         tab_instances[notion['name']] = tab_instance;
       }
+      var $body = this.createBlock('Import from : ' + file.replace(/^.*[\\\/]/, ''));
       $body.append($group);
 
       // Menu (validate, close...)
@@ -324,7 +315,7 @@
             import_notions = [];
             ref_body = $body.find('.import_table_import');
             
-            //pour chaque notion
+            //for each notion
             for (var k = 0; k < ref_body.length; k++) {
               var notion = ref_body[k];
               var $notion = $(notion);
@@ -342,11 +333,11 @@
                 continue;
               }
 
-              //pour chaque attribut
+              //for each attribute
               for (l = 1; l < ref_tr.length; l++) {
                 var category;
                 $tr = $(ref_tr[l]);
-                //1) Dropdowns = Attributs
+                //1) Dropdowns = Attributes
                 if($tr.find('select').val() != null) {
                   $select = $tr.find('select');
                   if(category == "Class attributes") {
@@ -368,7 +359,7 @@
               }
               var array = [];
               array["mode"] = import_mode;
-              //retrieve model from original imported notion (TODO : better way to do this)
+              //retrieve model from original imported notion
               for (var i = 0, len = notions.length; i < len; i++) {
                 var notion = notions[i];
                 if (notion["name"] == $notion.attr('id')) {
@@ -408,9 +399,10 @@
           };
         })(this)
       });
-      //TODO : find a better way to do this
-      var test = document.getElementById("confirm_button");
-      test.parentNode.removeChild(test);
+      //confirm button is generated each time the user selects a file, thus the
+      //previous button generated must be deleted (TODO : should be improved)
+      var delete_previous_button = document.getElementById("confirm_button");
+      delete_previous_button.parentNode.removeChild(delete_previous_button);
       $menu.prepend($create_button);
 
       return $display_block.append($body);

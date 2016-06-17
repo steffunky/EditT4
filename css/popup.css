@@ -52,12 +52,6 @@ textarea.form-control:not(.default) {
 
 /* table_import */
 
-/*.import_table_import {
-    margin-top: 40px;
-    width: 300px !important;
-    border:2px solid #E5E5E5;
-}*/
-
 .import_table_current, .import_table_import {
     margin-top: 40px;
     margin-left: 40px;

@@ -2,15 +2,10 @@
 // file unchanged (same content as EditT3) 
 (function() {
   window.Dnd = (function() {
-    var CLASS, COLUMN, ITEM, ROW;
-
-    ROW = 'row';
-
-    COLUMN = 'column';
-
-    ITEM = 'item';
-
-    CLASS = 'class';
+    var ROW = 'row';
+    var COLUMN = 'column';
+    var ITEM = 'item';
+    var CLASS = 'class';
 
     function Dnd(table, notionFactory, tagsManager) {
       this.table = table;
