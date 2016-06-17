@@ -35,7 +35,8 @@
     clearAll = function() {
       table.clear();
       notionFactory.clear();
-      return tagsManager.clear();
+      tagsManager.clear();
+      $('#p_name').text("");$('#p_desc').text("");
     };
     // Create and open the popup class
     createPopupClass = function(notion, notion_name, model, attributes) {
