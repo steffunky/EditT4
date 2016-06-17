@@ -27,9 +27,9 @@
       $group.attr('id', 'saver_informations');
       
       $label_save = this.createLabel('save_name', 'Name');
-      $input_save = this.createInputText('', 'save_name');
+      $input_save = this.createInputText('', 'save_name').val($('#p_name').text());;
       $label_description = this.createLabel('save_description', 'Description');
-      $text_description = $('<textarea></textarea>').addClass('form-control');
+      $text_description = $('<textarea></textarea>').addClass('form-control').text($('#p_desc').text());
       $text_description.attr({
         id: 'save_description',
         rows: '3'
