@@ -1,41 +1,31 @@
-# EditT3
+# EditT4
 
-An amelioration of EditT2 in HTML5/CSS3 and CoffeeScript to add more flexibility.
+EditT4 est une version améliorée de EditT3. Cette application web est devenue une application standalone fonctionnant avec NW.js (v0.13.0) et dispose de nouvelles fonctionnalités :
+- Application Standalone
+- Nouveau module de sauvegarde : les fichiers sont stockés sur disque. L'interface utilisée est l'explorateur de fichier de l'OS
+- Nouveau module d'import de données.
 
-## Usage 
+Cette version a été batie directement sur le code javascript générée par le code coffeescript de EditT3.
 
-After compiling CoffeeScript in JavaScript, just open index.html in your navigator (only tested with Firefox).
+## Usage
 
-## Compile JavaScript
+Logiciel requis : NW.js v0.13.0 : http://dl.nwjs.io/v0.13.0/nwjs-v0.13.0-win-ia32.zip
 
-To compile CoffeeScript files in JavaScript, just run:
+La procédure à suivre pour lancer une application sous NW.js est expliquée ici :
+https://github.com/nwjs/nw.js/wiki/How-to-run-apps
 
-    ./script compile
+## Version précédente
 
-## Develop 
+ * [EditT3](https://gitlab.cpy.re/florian/ter-EditT2)
 
-Run:
+## Remerciement
 
-    ./script watch
-
-And when you'll modify a CoffeeScript file it will be automatically compiled in JavaScript.
-
-## Clean
-
-Run: 
-
-    ./script clean
-
-To remove all JavaScript files (just keep CoffeeScript ones).
-
-
-## Thanks
-
-To all the authors of the projects (under [MIT license](http://opensource.org/licenses/MIT)) we use:
-
- * [CoffeeScript](http://coffeescript.org/)
+Merci à tous les auteurs des projets (sous [license MIT](http://opensource.org/licenses/MIT)) que nous avons utilisé:
  * [BootStrap](http://getbootstrap.com/)
  * [jQuery](http://jquery.com/)
  * [jQuery-contextMenu](http://medialize.github.io/jQuery-contextMenu/)
- * [jQuery-jqDnR](http://jquery.iceburg.net/jqDnR/)
  * [jQuery-popup-overlay](http://dev.vast.com/jquery-popup-overlay/)
+
+Autres projets utilisé dans le développement de la précédente version :
+ * [CoffeeScript](http://coffeescript.org/)
+ * [jQuery-jqDnR](http://jquery.iceburg.net/jqDnR/)

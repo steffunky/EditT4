@@ -1,3 +1,4 @@
+//File added with EditT4
 (function() {
   var extend = function(child, parent) {
     for (var key in parent) {
@@ -157,8 +158,7 @@
       // Cell/tooltip display
       var $group = $('<div></div>');
       
-      //TODO : TEST instance details
-      var tab_instance = [];
+      var tab_instances = [];
 
       // Create table
 
@@ -169,8 +169,6 @@
         var $table = $('<table></table>').attr('id', notion['name']).addClass('table table-condensed import_table_import');
         var $thead = $('<thead></thead>');
         var $tbody = $('<tbody></tbody>');
-
-        var tab_instance2 = [];
         
         //1st col : notion's name
         var $th = $('<th></th>').append(notion['name']);
@@ -200,7 +198,7 @@
         //a) desc
         $td = $('<td></td>').addClass('import_descs').append('Class attributes');
         $tr = $('<tr></tr>').attr('id', 'Class attributes').append($td);
-        $tr.append('<td></td>');//TODO : improve ? empty td, just to fit table size (2 columns)
+        $tr.append('<td></td>');//empty td just to fill the row
         $tbody.append($tr);
         //b) items
         for(var attribute in notion['class_attributes_model']) {
@@ -214,7 +212,7 @@
           select_array.push($select_att);
           
           $td = $('<td></td>').addClass('import_items_td').append($select_att);
-          $tr.append($td);          
+          $tr.append($td);
           $tbody.append($tr);
         }
 
@@ -222,7 +220,7 @@
         //a) desc
         $td = $('<td></td>').addClass('import_descs').append('Instance attributes');
         $tr = $('<tr></tr>').attr('id', 'Instance attributes').append($td);
-        $tr.append('<td></td>');//TODO : improve ? empty td, just to fit table size (2 columns)
+        $tr.append('<td></td>');//empty td just to fill the row
         $tbody.append($tr);
         //b) items
         for(var attribute in notion['instance_attributes_model']) {
@@ -230,7 +228,6 @@
           $td = $('<td></td>').addClass('import_items_td').append(attribute);
           $tr = $('<tr></tr>').addClass('import_items_th').attr('id', attribute).append($td);
           //2nd col : dropdown
-          //TODO : faire la différence class / instance attributes pour les options du merge.
           $select_att = $('<select></select>').attr('id', 'instance').addClass('import_dropdown');
           $select_att.append($('<option></option>').append("New attribute"));
           $select_att.append($('<option></option>').append("Ignore attribute"));
@@ -241,7 +238,7 @@
           $tbody.append($tr);
         }
 
-        //Dynamic changes the dropdowns values for attributes.
+        //Dynamically change the dropdowns values for attributes.
         //TODO : move it to a function ?
         //TODO : empecher de merger 2 fois sur le meme attribut
         //TODO : empecher d'ignorer name ? (attribut obligatoire ?)
@@ -294,10 +291,11 @@
         //a) desc
         $td = $('<td></td>').addClass('import_descs').append('Instances');
         $tr = $('<tr></tr>').append($td); 
-        $tr.append('<td></td>');//TODO : empty, just to fit table size (2 columns)
+        $tr.append('<td></td>');//empty td just to fill the row
         $tbody.append($tr);
         //b) items
         instances = notion['class_instances'];
+        var tab_instance = [];
         for (var j = 0; j < instances.length; j++) {
           var instance = instances[j];
           var ca = instance['class_attributes'];
@@ -308,25 +306,21 @@
           $td = $('<td></td>').addClass('import_items_td').append($input);
           $tr.append($td);
           $tbody.append($tr);
-          //TODO : TEST instance details
-          tab_instance2[ca['name']] = ca;
+          tab_instance[ca['name']] = ca;
         }
         $table.append($tbody);
         $group.append($table);
 
-        tab_instance[notion['name']] = tab_instance2;
+        tab_instances[notion['name']] = tab_instance;
       }
       $body.append($group);
 
-      //TODO : Confirm button
-
-      // Menu (validate, close...) //TODO : move it to a function ?
+      // Menu (validate, close...)
       $create_button = this.createButton('Confirm', true);
       $create_button.attr('id', 'confirm_button');
       $create_button.on({
         click: (function(_this) {
           return function() {
-            //TODO : complete
             import_notions = [];
             ref_body = $body.find('.import_table_import');
             
@@ -338,7 +332,7 @@
               var import_mode;
               var import_class_attributes = [];
               var import_instance_attributes = [];
-              var import_instances = [];
+              var import_classes = [];
 
               ref_tr = $notion.find('tr');
 
@@ -347,8 +341,6 @@
               if(import_mode == "Ignore notion") {
                 continue;
               }
-
-              //TODO : perte des value1/value2/etc.. à régler
 
               //pour chaque attribut
               for (l = 1; l < ref_tr.length; l++) {
@@ -367,12 +359,11 @@
                 else if ($tr.find('input').prop('checked') != null) {
                   $input = $tr.find('input');
                   if($input.prop('checked') == true) {
-                    //TODO : whole instance not just name
-                    import_instances.push(tab_instance[$notion.attr('id')][$tr.attr('id')]);
+                    import_classes.push(tab_instances[$notion.attr('id')][$tr.attr('id')]);
                   }
                 } else {
                   //goes here for descriptive tr ("attributes :", "instances :")
-                  category = $tr.attr('id');
+                  category = $tr.attr('id');//kind of state variable
                 }
               }
               var array = [];
@@ -388,8 +379,8 @@
                       array["class_attributes_model"][key] = notion['class_attributes_model'][key];
                     } else {
                       //update all instances (remove attribute for each)
-                      for(var instance in import_instances) {
-                        delete import_instances[instance][key];
+                      for(var instance in import_classes) {
+                        delete import_classes[instance][key];
                       }
                     }
                   }
@@ -399,8 +390,8 @@
                       array["instance_attributes_model"][key] = notion['instance_attributes_model'][key];
                     } else {
                       //update all instances (remove attribute for each)
-                      for(var instance in import_instances) {
-                        delete import_instances[instance][key];
+                      for(var instance in import_classes) {
+                        delete import_classes[instance][key];
                       }
                     }
                   }
@@ -408,18 +399,16 @@
               }
               array["class_attributes_modes"] = import_class_attributes;
               array["instance_attributes_modes"] = import_instance_attributes;              
-              array["instances"] = import_instances;
+              array["classes"] = import_classes;
 
               import_notions[$notion.attr('id')] = array;
             }
-            console.log("import_notions =");
-            console.log(import_notions);
             _this.$popupimport.trigger('importSet', [import_notions]);
             return _this.close();
           };
         })(this)
       });
-      //TODO : delete multiple confirm (better way do this ?)
+      //TODO : find a better way to do this
       var test = document.getElementById("confirm_button");
       test.parentNode.removeChild(test);
       $menu.prepend($create_button);

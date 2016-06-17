@@ -7,14 +7,13 @@
         createPopupClass, createPopupLoadClass,     dnd,
         instanceEvents,   notionFactory,            popupClass,
         popupDisplay,     popupFilter,              popupInstance,
-        popupLoadClass,   popupLoadNotion,          popupNotions,
-        popupRestore,     popupSaver,               popupTags,
-        saver,            table,                    tagsManager,
-        popupImport;
+        popupNotions,     popupImport,              popupSaver,
+        popupTags,        tagsManager,              saver,
+        table;
 
     // Nodes
     $notion = $('#notions');
-    //Objects. Instanciate popups at the beginning since we could call them many times
+    // Objects. Instanciate popups at the beginning since we could call them many times
     table = new Table();
     // 10 splits max of a cell
     contextMenuTable = new ContextMenuTable(table, 10);
@@ -30,9 +29,6 @@
     popupFilter = new PopupFilter();
     popupSaver = new PopupSaver();
     saver = new Saver(notionFactory, table, tagsManager);
-    popupRestore = new PopupRestore();
-    popupLoadNotion = new PopupLoadNotion();
-    popupLoadClass = new PopupLoadClass();
     popupImport = new PopupImport();
     
     // Clear the table and the notions
@@ -64,6 +60,7 @@
       });
     };
     // Create a new notion
+    //TODO : update attributes list after an import ?
     createNotion = function(notion_name, class_values, instance_values) {
       var $notion_node, notion;
       // We create the notion from the notionFactory
@@ -177,24 +174,6 @@
             }
           });
           return popupNotions.show();
-        },
-        //TODO : delete ?
-        loadNotion: function() {
-          popupLoadNotion.create(saver.getSaves());
-          popupLoadNotion.getNode().on({
-            loadNotion: function(e, notion) {
-              var attribute, notion_instance, ref, results, value;
-              notion_instance = createNotion(notion.name, notion['class_attributes_model'], notion['instance_attributes_model']);
-              ref = notion['display_attributes'];
-              results = [];
-              for (attribute in ref) {
-                value = ref[attribute];
-                results.push(notion_instance.updateDisplayAttributes(attribute, value['cell'], value['tooltip']));
-              }
-              return results;
-            }
-          });
-          return popupLoadNotion.show();
         }
       });
     };
@@ -219,7 +198,7 @@
         var fs = require('fs');
         var os = require('os');
         var path = require('path');
-        var dir = os.homedir()+path.sep+"EditT4";
+        var dir = os.homedir()+path.sep+"EditT4";//TODO : ne marche pas avec nw.js post 13.0
         if (!fs.existsSync(dir)){
             fs.mkdirSync(dir);
         }
@@ -261,8 +240,8 @@
               //cas 1 : New notion
               if(import_notion["mode"] == "New notion") {
                 var new_notion = createNotion(key, import_notion["class_attributes_model"], import_notion["instance_attributes_model"]);
-                for(var key2 in import_notion["instances"]) {
-                  createClass(key, new_notion, import_notion["instances"][key2]);
+                for(var key2 in import_notion["classes"]) {
+                  createClass(key, new_notion, import_notion["classes"][key2]);
                 }
               }
               //cas 2 : Merge notion
@@ -281,20 +260,19 @@
                   //create new attribute
                   if(import_notion["class_attributes_modes"][key2] == "New attribute") {
                     var att_values = "" //TODO : complete values (value1/value2/etc..)
-                    notion_targeted.addClassAttributeModel(key2, "");
+                    notion_targeted.addClassAttributeModel(key2, import_notion["class_attributes_model"][key2]);
                   }
                   //merge with existing attribute
                   //
                   //méthode : ajouter attribut à chaque instance en copiant la valeur de l'ancien
                   //attribut dedans, puis supprimer ce dernier (/!\ exception pour les doublons)
-                  //TODO : better way to do this ?
                   else if (import_notion["class_attributes_modes"][key2].substring(0, 5) == "Merge") {
                     var substr_att = import_notion["class_attributes_modes"][key2].replace("Merge with ", "");
-                    //update attribute for each instance //TODO : better way to do this ?
-                    for(var key3 in import_notion["instances"]) {
+                    //update attribute for each instance
+                    for(var key3 in import_notion["classes"]) {
                       if(substr_att != key2) {
-                        import_notion["instances"][key3][substr_att] = import_notion["instances"][key3][key2];
-                        delete import_notion["instances"][key3][key2];
+                        import_notion["classes"][key3][substr_att] = import_notion["classes"][key3][key2];
+                        delete import_notion["classes"][key3][key2];
                       }
                     }
                   }
@@ -303,28 +281,25 @@
                 for(var key2 in import_notion["instance_attributes_modes"]) {
                   //create new attribute
                   if(import_notion["instance_attributes_modes"][key2] == "New attribute") {
-                    var att_values = "" //TODO : complete values (value1/value2/etc..)
-                    notion_targeted.addInstanceAttributeModel(key2, "");
+                    notion_targeted.addInstanceAttributeModel(key2, import_notion["instance_attributes_model"][key2]);
                   }
                   //merge with existing attribute
                   //
                   //méthode : ajouter attribut à chaque instance en copiant la valeur de l'ancien
                   //attribut dedans, puis supprimer ce dernier (/!\ exception pour les doublons)
-                  //TODO : better way to do this ?
                   else if (import_notion["instance_attributes_modes"][key2].substring(0, 5) == "Merge") {
                     var substr_att = import_notion["instance_attributes_modes"][key2].replace("Merge with ", "");
-                    //update attribute for each instance //TODO : better way to do this ?
-                    for(var key3 in import_notion["instances"]) {
+                    for(var key3 in import_notion["classes"]) {
                       if(substr_att != key2) {
-                        import_notion["instances"][key3][substr_att] = import_notion["instances"][key3][key2];
-                        delete import_notion["instances"][key3][key2];
+                        import_notion["classes"][key3][substr_att] = import_notion["classes"][key3][key2];
+                        delete import_notion["classes"][key3][key2];
                       }
                     }
                   }
                 }
                 //add new classes
-                for(var key2 in import_notion["instances"]) {
-                  createClass(notion_targeted["key"], notion_targeted, import_notion["instances"][key2]);
+                for(var key2 in import_notion["classes"]) {
+                  createClass(notion_targeted["key"], notion_targeted, import_notion["classes"][key2]);
                 }
               }
             }
