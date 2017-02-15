@@ -191,26 +191,75 @@
       }
       return results;
     };
+    
+    Table.prototype.getCol = function(colnum){
+        var colToGet = colnum;
+        var offsets = [];
+        var skips = [];
+        var cells = [];
 
+      console.log($(this));
+        function incrementOffset(index) {
+            if (offsets[index]) {
+                offsets[index]++;
+            } else {
+                offsets[index] = 1;
+            }
+        }
+
+        function getOffset(index) {
+            return offsets[index] || 0;
+        }
+
+        $("table tr").each(function(rowIndex) {
+            var thisOffset = getOffset(rowIndex);
+
+            $(this).children().each(function(tdIndex) {
+
+                var rowspan = $(this).attr("rowspan");
+
+                if (tdIndex + thisOffset >= colToGet) {
+                    if(skips[rowIndex]) return false;
+                    console.log($(this));
+                    cells.push($(this));
+
+                    if (rowspan > 1) {
+                        for (var i = 1; i < rowspan; i++) {
+                            skips[rowIndex + i] = true;
+                        }
+                    }
+
+                    return false;
+                }
+
+                if (rowspan > 1) {
+                    for (var i = 1; i < rowspan; i++) {
+                        incrementOffset(rowIndex + i);
+                    }
+                }
+            });
+        });
+        return cells;
+    }
     // TODO : Broken. Should move columns
     Table.prototype.moveColumn = function($src, $src_copy, $dest) {
       var $elements_dest, $elements_src, column_dest, column_src, i, k, ref, results;
-      column_src = this.getNumColumn($src);
-      column_dest = this.getNumColumn($dest);
-      
+      column_src = $src.parent().children().index($src)
+      column_dest = $src.parent().children().index($dest)
+
       // Same columns, quit
       if (column_src === column_dest) {
         return;
       }
 
       // Insert each cell of the column after each cell of the target column
-      $elements_src = this.getColumn(column_src);
-      $elements_dest = this.getColumn(column_dest);
-      
+      $elements_src = this.getCol(column_src);
+      $elements_dest = this.getCol(column_dest);
+
       // Start with the header
-      $src = $elements_src.eq(0);
+      $src = $elements_src[0];
       $src_copy = $src.clone();
-      $dest = $elements_dest.eq(0);
+      $dest = $elements_dest[0];
       
       $src_copy.insertAfter($dest);
       this.$table.trigger('headerCellMoved', [$src_copy]);
@@ -220,9 +269,9 @@
       results = [];
       // Cells (not draggable)
       for (i = k = 1, ref = $elements_src.length - 1; k <= ref; i = k += 1) {
-        $src = $elements_src.eq(i);
+        $src = $elements_src[i];
         $src_copy = $src.clone();
-        $dest = $elements_dest.eq(i);
+        $dest = $elements_dest[i];
         $src_copy.insertAfter($dest);
         this.$table.trigger('cellMoved', [$src_copy]);
         $src_copy.find('.item').each((function(_this) {
