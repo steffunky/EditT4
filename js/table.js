@@ -197,8 +197,7 @@
         var offsets = [];
         var skips = [];
         var cells = [];
-
-      console.log($(this));
+        console.log("colToGet : " + colToGet);
         function incrementOffset(index) {
             if (offsets[index]) {
                 offsets[index]++;
@@ -211,11 +210,10 @@
             return offsets[index] || 0;
         }
 
-        $("table tr").each(function(rowIndex) {
+        $("#mytable table tr").each(function(rowIndex) {
             var thisOffset = getOffset(rowIndex);
             cells.push([false,false]);
             $(this).children().each(function(tdIndex) {
-
                 var rowspan = $(this).attr("rowspan");
                 if (tdIndex + thisOffset >= colToGet) {
                     if(skips[rowIndex]) return false;
@@ -237,6 +235,7 @@
                     }
                 }
             });
+
         });
         return cells;
     }
@@ -258,18 +257,16 @@
             return offsets[index] || 0;
         }
 
-        $("table tr").each(function(rowIndex) {
+        $("#mytable table tr").each(function(rowIndex) {
             var thisOffset = getOffset(rowIndex);
             cells.push(['tr',$(this)])
-            console.log("row nb " + rowIndex)
             $(this).children().each(function(tdIndex) {
 
                 var rowspan = $(this).attr("rowspan");
 
                 if (tdIndex + thisOffset >= colToGet) {
                     if(skips[rowIndex]) return false;
-                    console.log("td num " + tdIndex)
-                    console.log($(this));
+
                     cells.pop();
                     cells.push(['td',$(this)]);
 
@@ -309,10 +306,6 @@
 
       // Start with the header
       $src = $elements_src[0][1];
-      console.log(" ////////////////////// ");
-      console.log($src);
-      console.log(" ////////////////////// ");
-
       $src_copy = $src.clone();
       $dest = $elements_dest[0][1];
 
