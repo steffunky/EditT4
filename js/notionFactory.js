@@ -26,7 +26,7 @@
     }
 
     // --------------- Public methods ---------------
-  
+
     // Create a new notion
     NotionFactory.prototype.createNotion = function(notion_name, class_attributes_model, instance_attributes_model) {
       var key, notion, value;

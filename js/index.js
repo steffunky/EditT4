@@ -30,7 +30,7 @@
     popupSaver = new PopupSaver();
     saver = new Saver(notionFactory, table, tagsManager);
     popupImport = new PopupImport();
-    
+
     // Clear the table and the notions
     clearAll = function() {
       table.clear();
@@ -162,9 +162,11 @@
     applyListenersOnNotionFactory = function(factory) {
       return factory.getNotionFactoryNode().on({
         addNotion: function() {
+          console.log("????");
           popupNotions.create();
           popupNotions.getNode().on({
             notionsCreated: function(e, objects) {
+              console.log("help");
               var notion_name, results, values;
               results = [];
               for (notion_name in objects) {
@@ -264,7 +266,7 @@
                   }
                   //merge with existing attribute
                   //
-                  //method used : 
+                  //method used :
                   // - add the new attribute to each instance
                   // - copy the value of the former attribute into the new one
                   // - delete the former attribute
@@ -437,7 +439,22 @@
     // Build the table (header, evenements), append to our page and apply listeners
     table.buildTable();
     $('#mytable').append(table.getTableNode());
+    var a_window = window.open('notion.html',{
+        "position": "center",
+        "focus": true,
+        "toolbar": false,
+        "frame": true
+      });
     // Notion factory
+    global.dic = {};
+    global.dic["facto"] = applyListenersOnNotionFactory;
+    global.dic["nf"] = notionFactory;
+    global.dic["pn"] = popupNotions;
+    global.dic["add_notion"] = $(".add_notion");
+
+    console.log("allo");
+    console.log(global.NoF);
+    //var global
     return applyListenersOnNotionFactory(notionFactory);
   });
 
