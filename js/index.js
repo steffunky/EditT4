@@ -13,6 +13,9 @@
 
     // Nodes
     $notion = $('#notions');
+    global.dic = {};
+    global.dic["is_ldd"] = 0;
+
     // Objects. Instanciate popups at the beginning since we could call them many times
     table = new Table();
     // 10 splits max of a cell
@@ -446,14 +449,15 @@
         "frame": true
       });
     // Notion factory
-    global.dic = {};
     global.dic["facto"] = applyListenersOnNotionFactory;
     global.dic["nf"] = notionFactory;
     global.dic["pn"] = popupNotions;
     global.dic["add_notion"] = $(".add_notion");
-
+    global.dic["cb"] = popupNotions.$closebutton;
+  //  $(".add_notion").click();
+    //popupNotions.$popupnotions.find(".close_button").click();
     console.log("allo");
-    console.log(global.NoF);
+    global.dic["is_ldd"] = 0;
     //var global
     return applyListenersOnNotionFactory(notionFactory);
   });
