@@ -28,6 +28,7 @@
   console.log(global.dic["nf"]);
 
   global.dic["pn"].close();
+  global.dic["html"].click();
   //global.dic["cb"].click();
   //global.dic["pn"].hide();
   console.log(global.dic["nf"]);

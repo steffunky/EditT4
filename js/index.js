@@ -431,6 +431,19 @@
         return popupFilter.show();
       }
     });
+    $('#component_button').on({
+      click: function() {/*
+        popupSaver.create(notionFactory.getNotions());
+        popupSaver.getNode().on({
+          saverSet: function(e, filename, to_save) {
+            return saver.save(filename, to_save);
+          }
+        });
+        return popupSaver.show();*/
+
+        //TODO: create popup
+      }
+    });
     $(document).on({
       mousedown: function() {
         return table.setMouseDown(true);
@@ -454,10 +467,12 @@
     global.dic["pn"] = popupNotions;
     global.dic["add_notion"] = $(".add_notion");
     global.dic["cb"] = popupNotions.$closebutton;
+    global.dic["html"] = $("html");
+
   //  $(".add_notion").click();
     //popupNotions.$popupnotions.find(".close_button").click();
     console.log("allo");
-    global.dic["is_ldd"] = 0;
+    global.dic["is_ldd"] = 1;
     //var global
     return applyListenersOnNotionFactory(notionFactory);
   });

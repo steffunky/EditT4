@@ -24,6 +24,7 @@ nav {
     margin-right: 15px;
     margin-left: 15px;
     width: 495px;
+    display : none; 
 }
 
 .ctm-notion {
