@@ -289,7 +289,7 @@
         return cells;
     }
 
-    // TODO : Broken. Should move columns
+    //Should move columns
     Table.prototype.moveColumn = function($src, $src_copy, $dest) {
       var $elements_dest, $elements_src, column_dest, column_src, i, k, ref, results;
       column_src = $src.parent().children().index($src)
@@ -606,6 +606,21 @@
       }
       this.columnNumber += 1;
       return this.$table.trigger('headerCellCreated', [$header]);
+    };
+
+    Table.prototype.removeColumn = function(name) {
+      var $elements_src, column_src, i, k, ref, results;
+      column_src = this.$table.children().children().children().index(this.$table.find("tr th div div:contains('" + name + "')").parent().parent());
+      $elements_src = this.getCol(column_src);
+      $src = $elements_src[0][1];
+      $src.remove();
+      // Cells (not draggable)
+      for (i = k = 0, ref = $elements_src.length - 1; k <= ref; i = k += 1) {
+        $src = $elements_src[i];
+        if($src[0]){
+          $src[1].remove();
+        }
+      }
     };
 
     Table.prototype.setMouseDown = function(state) {

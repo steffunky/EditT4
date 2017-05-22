@@ -15,11 +15,11 @@ global.dollar = $;
         popupDisplay,     popupFilter,              popupInstance,
         popupNotions,     popupImport,              popupSaver,
         popupTags,        tagsManager,              saver,
-        table;
+        table, $notion_list, table_list;
 
     // Nodes
     $notion = $('#notions');
-
+    $notion_list = $('#notions_hidden');
     // Objects. Instanciate popups at the beginning since we could call them many times
     table = new Table();
     // 10 splits max of a cell
@@ -37,6 +37,7 @@ global.dollar = $;
     popupSaver = new PopupSaver();
     saver = new Saver(notionFactory, table, tagsManager);
     popupImport = new PopupImport();
+    popupNotionList = new PopupNotionList();
 
     // Clear the table and the notions
     clearAll = function() {
@@ -75,7 +76,7 @@ global.dollar = $;
       notion = notionFactory.createNotion(notion_name, class_values, instance_values);
       // Get the node and append it to our notion root
       $notion_node = notion.getNotionNode();
-      $notion.append($notion_node);
+      $notion_list.append($notion_node);
       // When the user want to create a class
       $notion_node.on({
         addClass: function() {
@@ -83,9 +84,8 @@ global.dollar = $;
         },
         loadClass: function() {
           return createPopupLoadClass(notion, notion_name);
-        }
+        },
       });
-      table.addColumn(notion_name);
       return notion;
     };
     // Create a new class
@@ -434,16 +434,30 @@ global.dollar = $;
       }
     });
     $('#component_button').on({
-      click: function() {/*
-        popupSaver.create(notionFactory.getNotions());
-        popupSaver.getNode().on({
-          saverSet: function(e, filename, to_save) {
-            return saver.save(filename, to_save);
-          }
+      click: function() {
+        popupNotionList.create(notionFactory.getNotions(),notionFactory.getActiveNotions());
+        popupNotionList.getNode().on({
+            notionsActivation: function(e,res){
+                for(var i = 0; i < res['add'].length;++i){
+                  $notion.append(res['add'][i].$notion);
+                  notionFactory.activeNotion(res['add'][i]);
+                  table.addColumn(res['add'][i].getName());
+                }
+                for(var i = 0; i < res['del'].length;++i){
+                  for(var j = 0; j <$notion.children().length; j++){
+                    $childnode=$notion.children()[j]
+                    if(JSON.stringify($childnode) == JSON.stringify(res['del'][i].$notion[0])){
+                      $childnode.remove();
+                      break;
+                    }
+                  }
+                  table.removeColumn(res['del'][i].getName());
+                  notionFactory.deactiveNotion(res['del'][i]);
+                }
+            }
         });
-        return popupSaver.show();*/
+        return popupNotionList.show();
 
-        //TODO: create popup
       }
     });
     $(document).on({
@@ -468,7 +482,9 @@ global.dollar = $;
     global.dic["nf"] = notionFactory;
     global.dic["pn"] = popupNotions;
     global.popupNotions = popupNotions;
-
+    global.Cnotions = createNotion;
+    global.notion_list = $notion_list
+    global.notion = $notion
     global.dic["add_notion"] = $(".add_notion");
     global.dic["cb"] = popupNotions.$closebutton;
     global.dic["html"] = $("html");

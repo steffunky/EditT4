@@ -22,6 +22,7 @@
     function NotionFactory($root) {
       this.$notionFactory = $root;
       this.notions = [];
+      this.notions_active = [];
       this.populateNode();
     }
 
@@ -39,13 +40,24 @@
         value = instance_attributes_model[key];
         notion.addInstanceAttributeModel(key, value);
       }
+
       this.notions.push(notion);
       // /!\ notionCreated relative to draganddrop.js, not index.js
       this.$notionFactory.trigger('notionCreated', [notion]);
 
       return notion;
     };
-
+    NotionFactory.prototype.activeNotion = function (notion){
+      this.notions_active.push(notion);
+    }
+    NotionFactory.prototype.deactiveNotion = function (notion){
+      for(var i = 0; i < this.notions_active.length; ++i)
+      {
+        if (JSON.stringify(this.notions_active[i]) == JSON.stringify(notion)){
+          this.notions_active.splice(i,1);
+        }
+      }
+    }
     NotionFactory.prototype.getNotionFactoryNode = function() {
       return this.$notionFactory;
     };
@@ -53,7 +65,9 @@
     NotionFactory.prototype.getNotions = function() {
       return this.notions;
     };
-
+    NotionFactory.prototype.getActiveNotions = function() {
+      return this.notions_active;
+    };
     NotionFactory.prototype.clear = function() {
       this.$notionFactory.empty();
       this.populateNode();

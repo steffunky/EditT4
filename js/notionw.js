@@ -7,13 +7,12 @@
     var popupNotions = new PopupNotions();
     popupNotions.create();
     popupNotions.show();
-
+    popupNotions.$popupnotions.popup({blur : false});
     $(".close_button").hide();
     $(".valid_button").off("click");
     $(".valid_button").on({
       click: (function(_this) {
         return function() {
-
           global.popupNotions.$popupnotions.trigger('notionsCreated', [popupNotions.notions]);
           global.popupNotions.close();
           return false;
@@ -26,5 +25,6 @@
     setTimeout(function(){
       global.popupNotions.close();
     }, 100);
+    global.Cnotions("test","lol","mdr");
   });
 }).call(this);
