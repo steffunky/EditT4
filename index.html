@@ -26,14 +26,40 @@
                 <span class="glyphicon glyphicon-file" aria-hidden="true"></span> File <span class="caret"></span>
               </button>
               <ul class="dropdown-menu" role="menu">
-                <li><a id='alias_open_button' href="#" >Open</a></li>
+                <li><a id='alias_open_button' class="glyphicon glyphicon-folder-open" href="#" > Open </a></li>
                 <li role="separator" class="divider"></li>
-                <li><a id='new_button' href="#" >New</a></li>
+                <li><a id='new_button' class="glyphicon glyphicon-asterisk" href="#" > New </a></li>
+                <li role="separator" class="divider"></li>
+                <li><a id='save_button' class="glyphicon glyphicon-floppy-save" href="#" > Save As </a></li>
               </ul>
             </div>
-            <button id='save_button' type="button" class="btn btn-default" aria-label="Left Align">
-              <span class="glyphicon glyphicon-floppy-save" aria-hidden="true"></span> Save As
+            <div class="btn-group">
+              <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                <span class=" glyphicon glyphicon-blackboard" aria-hidden="true"></span> Workspace <span class="caret"></span>
+              </button>
+              <ul class="dropdown-menu" role="menu">
+                <li><a id='display_button' class="glyphicon glyphicon-eye-open" href="#" > Display </a></li>
+                <li role="separator" class="divider"></li>
+                <li><a id='component_button' class="glyphicon glyphicon glyphicon-list-alt" href="#" > Components </a></li>
+              </ul>
+            </div>
+            <div class="btn-group">
+              <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                <span class="glyphicon glyphicon-tags" aria-hidden="true"></span> Things <span class="caret"></span>
+              </button>
+              <ul class="dropdown-menu" role="menu">
+                <li><a id='notion_button' class="glyphicon glyphicon glyphicon-cog" href="#" > Notions </a></li>
+                <li role="separator" class="divider"></li>
+                <li><a id='tags_button'  class="glyphicon glyphicon-tag" href="#" > Tags </a></li>
+                <li role="separator" class="divider"></li>
+                <li><a id='filter_button' class="glyphicon glyphicon glyphicon-cog" href="#" > Filters </a></li>
+              </ul>
+            </div>
+
+            <button id='fs_button' type="button" class="btn btn-default" aria-label="Left Align">
+              <span class="glyphicon glyphicon-scissors" aria-hidden="true"></span> Filesys
             </button>
+            <!--
             <button id='import_button' type="button" class="btn btn-default" aria-label="Left Align">
               <span class="glyphicon glyphicon-import" aria-hidden="true"></span> Import
             </button>
@@ -45,13 +71,15 @@
             </button>
             <button id='filter_button' type="button" class="btn btn-default" aria-label="Left Align">
               <span class="glyphicon glyphicon glyphicon-cog" aria-hidden="true"></span> Filter
-            </button>
-            <button id='component_list' type="button" class="btn btn-default" aria-label="Left Align">
+
+
+            <button id='component_button' type="button" class="btn btn-default" aria-label="Left Align">
               <span class="glyphicon glyphicon glyphicon-list-alt" aria-hidden="true"></span> Components
-            </button>
+            </button> -->
           </div>
         </nav>
         <div id="notions" style="padding-right: 0px;"></div>
+        <div id="notions_hidden" style="padding-right: 0px; display : none;"></div>
       </div>
       <div class="col-md-6">
         <p id='p_name' style='font-weight: bold;'></p>
@@ -95,6 +123,7 @@
   <script src="js/saver.js"></script>
   <script src="js/index.js"></script>
   <script src="js/popupImport.js"></script>
+  <script src="js/popupNotionList.js"></script>
 
   </body>
 </html>

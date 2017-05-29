@@ -228,7 +228,7 @@ global.dollar = $;
     });
     $('#save_button').on({
       click: function() {
-        popupSaver.create(notionFactory.getNotions());
+        popupSaver.create(notionFactory.getActiveNotions());
         popupSaver.getNode().on({
           saverSet: function(e, filename, to_save) {
             return saver.save(filename, to_save);
@@ -239,7 +239,7 @@ global.dollar = $;
     });
     $('#import_button').on({
       click: function() {
-        popupImport.create(notionFactory.getNotions());
+        popupImport.create(notionFactory.getActiveNotions());
         popupImport.getNode().on({
           importSet: function(e, import_notions) {
             for (var key in import_notions) {
@@ -319,10 +319,22 @@ global.dollar = $;
     });
     $('#tags_button').on({
       click: function() {
-        popupTags.create(tagsManager.getTags());
-        popupTags.getNode().on({
+        if (!global.isTagsWindowOpen){
+            nw.Window.open('tags.html',{
+
+            }, function(win){
+              win.height = 800;
+              win.width = 800;
+              global.windowTags = win;
+              });
+            global.isTagsWindowOpen = true;
+          }
+        //popupTags.create(tagsManager.getTags());
+        setTimeout(function(){
+        global.popupTags.getNode().on({
           tagsSet: function(e, tags) {
             var instance, j, len, notion, ref, results;
+            console.log(tags);
             if (tags) {
               tagsManager.setTags(tags);
               ref = notionFactory.getNotions();
@@ -345,12 +357,13 @@ global.dollar = $;
             }
           }
         });
-        return popupTags.show();
+      }, 1000);
+        //return popupTags.show();
       }
     });
     $('#display_button').on({
       click: function() {
-        popupDisplay.create(notionFactory.getNotions(), tagsManager.getTagsConf(), tagsManager.getDefaultColors());
+        popupDisplay.create(notionFactory.getActiveNotions(), tagsManager.getTagsConf(), tagsManager.getDefaultColors());
         popupDisplay.getNode().on({
           displaySet: function(e, notions_display, tags_conf) {
             var attribute, display_attribute, i, j, notion, notion_display, notions, ref, results;
@@ -382,7 +395,7 @@ global.dollar = $;
             if (filters === {}) {
               return;
             }
-            ref = notionFactory.getNotions();
+            ref = notionFactory.getActiveNotions();
             results = [];
             // Great complexity. Web workers ?
             for (j = 0, len = ref.length; j < len; j++) {
@@ -435,7 +448,7 @@ global.dollar = $;
     });
     $('#component_button').on({
       click: function() {
-        popupNotionList.create(notionFactory.getNotions(),notionFactory.getActiveNotions());
+        popupNotionList.create(notionFactory.getNotions(),notionFactory.getActiveNotions(),tagsManager.getTags(),0);
         popupNotionList.getNode().on({
             notionsActivation: function(e,res){
                 for(var i = 0; i < res['add'].length;++i){
@@ -460,6 +473,32 @@ global.dollar = $;
 
       }
     });
+
+    $('#notion_button').on({
+      click : function() {
+        if (!global.isNotionWindowOpen){
+            nw.Window.open('notion.html',{
+
+            }, function(win){
+              global.windowNotion = win;
+              });
+            global.isNotionWindowOpen = true;
+        }
+      },
+    })
+
+    $('#fs_button').on({
+      click : function() {
+        if (!global.isFSWindowOpen){
+            nw.Window.open('filesystem.html',{
+
+            }, function(win){
+              global.windowFS = win;
+              });
+            global.isFSWindowOpen = true;
+        }
+      },
+    })
     $(document).on({
       mousedown: function() {
         return table.setMouseDown(true);
@@ -471,20 +510,17 @@ global.dollar = $;
     // Build the table (header, evenements), append to our page and apply listeners
     table.buildTable();
     $('#mytable').append(table.getTableNode());
-    var a_window = window.open('notion.html',{
-        "position": "center",
-        "focus": true,
-        "toolbar": false,
-        "frame": true
-      });
+    global.tagsWis_ldd = 0;
     // Notion factory
     global.dic["facto"] = applyListenersOnNotionFactory;
     global.dic["nf"] = notionFactory;
     global.dic["pn"] = popupNotions;
     global.popupNotions = popupNotions;
     global.Cnotions = createNotion;
-    global.notion_list = $notion_list
-    global.notion = $notion
+    global.notion_list = $notion_list;
+    global.notion = $notion;
+    global.tagsManager = tagsManager;
+    global.tags = tagsManager;
     global.dic["add_notion"] = $(".add_notion");
     global.dic["cb"] = popupNotions.$closebutton;
     global.dic["html"] = $("html");

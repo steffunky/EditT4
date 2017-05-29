@@ -1,0 +1,16 @@
+img {
+height : 100px;
+width : auto;
+display : inline-block;
+}
+figure {
+height : 100px;
+width : auto;
+display : inline-block;
+}
+figcaption{
+text-align:center;
+}
+.fs-div-component{
+  display : inline-block;
+}

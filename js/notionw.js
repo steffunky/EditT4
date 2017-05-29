@@ -1,9 +1,18 @@
 (function() {
   $(function() {
-    $("body").addClass('dropper');
+
+
+    var win = nw.Window.get();
+    win.on('close', function() {
+      global.isNotionWindowOpen = false;
+      win.close(true);
+    });
+
+
     while(global.is_ldd != 1){
       ;
     }
+
     var popupNotions = new PopupNotions();
     popupNotions.create();
     popupNotions.show();
@@ -22,9 +31,10 @@
 
     //popup in original window
     global.dic["add_notion"].click();
+    global.popupNotions.close();
     setTimeout(function(){
       global.popupNotions.close();
     }, 100);
-    global.Cnotions("test","lol","mdr");
+
   });
 }).call(this);
